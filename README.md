@@ -23,4 +23,7 @@ This is a bullet hell indie game where you try to dodge obstacles and survive th
 
 ## Installation
 To play you may just download the zip file or clone the repositore.
+
 **Bash command:**
+   ```bash
+   git clone https://github.com/Game-JAVA/Umbrella-Squad.git
