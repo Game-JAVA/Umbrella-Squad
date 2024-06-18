@@ -23,7 +23,12 @@ Este é um jogo indie bullet hell onde você tenta desviar dos obstáculos e sob
 
 ## Instalação
 Para jogar basta baixar o arquivo zip ou clonar o repositório.
+##
+
+## Link do Diagrama UML
+https://app.diagrams.net/#G14IMBfOikrQaJrdQjvGuJhNwxqZ268sJ8#%7B%22pageId%22%3A%22xYIkqrIyDs8MGjE_6Ou5%22%7D
 
 **Comando bash:**
    ```bash
    git clone https://github.com/Game-JAVA/Umbrella-Squad.git
+   
