@@ -1,29 +1,29 @@
 # DodgeMaster
-## Description
-This is a bullet hell indie game where you try to dodge obstacles and survive the maximum you can. The game offers a infinite experience wit three difficulty levels availables to play. Everything was developed using the JavaFX library through the first semester of our college.
+## Descrição
+Este é um jogo indie bullet hell onde você tenta desviar dos obstáculos e sobreviver o máximo que puder. O jogo oferece uma experiência infinita com três níveis de dificuldade disponíveis para jogar. Tudo foi desenvolvido utilizando a biblioteca JavaFX durante o primeiro semestre da nossa faculdade.
 
 ## Instructions
 
-1. **Welcome Screen:**
-   - Includes a button to select the difficulty level.
-   - Includes a start button to begin the game.
+1. **Tela de boas vindas:**
+   - Inclui um botão para selecionar o nível de dificuldade.
+   - Inclui um botão Iniciar para iniciar o jogo.
 
-2. **Gameplay:**
-   - In the center of the screen, the character, represented by a red square, must dodge the obstacles that come towards them.
-   - The score is based on the time the player has survived and coins that was collected.
-   - As the character progresses, the obstacles move faster, increasing the game's difficulty.
-   - A simple HUD is present displaying the health and points of the player.
+2. **Jogabilidade:**
+   - No centro da tela, o personagem, representado por um quadrado vermelho, deve desviar dos obstáculos que vierem em sua direção.
+   - A pontuação é baseada no tempo que o jogador sobreviveu e nas moedas coletadas.
+   - Conforme o personagem avança, os obstáculos se movem mais rápido, aumentando a dificuldade do jogo.
+   - Um HUD simples está presente exibindo a saúde e os pontos do jogador.
 
-## Controls
-- wasd/arrow keys to move the character.
-- Esc to pause the game.
+## Controles
+- teclas wasd/seta para mover o personagem.
+- Esc para pausar o jogo.
 
-## Requirements
-- Java IDE or compilator (InteliJ recommended).
+## Requisitos
+- Java IDE ou compilador (recomendado InteliJ).
 
-## Installation
-To play you may just download the zip file or clone the repositore.
+## Instalação
+Para jogar basta baixar o arquivo zip ou clonar o repositório.
 
-**Bash command:**
+**Comando bash:**
    ```bash
    git clone https://github.com/Game-JAVA/Umbrella-Squad.git
