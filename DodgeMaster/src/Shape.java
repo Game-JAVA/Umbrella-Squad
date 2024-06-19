@@ -25,11 +25,11 @@ public abstract class Shape {
 
     //Métodos
 
-    public  void move(int screenHeightX,int screenWidth){
+    public  void move(int screenHeight,int screenWidth){
         this.posX += speedX;
         this.posY += speedY;
     }
-    //Getters and Seters
+    //Getters and Setters
 
     public int getPosX() {
         return posX;
@@ -77,3 +77,4 @@ public abstract class Shape {
                 '}';
     }
 }
+
