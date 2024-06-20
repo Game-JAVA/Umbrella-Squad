@@ -28,8 +28,6 @@ public class Bullet extends Rectangle {
     public static void main(String[] args) {
         // Cria uma bala com dano inicial de 10
         Bullet bullet = new Bullet(10);
-
-        // Mostra o dano da bala criada
-        System.out.println("Dano da bala: " + bullet.getDamage());
+        
     }
 }
