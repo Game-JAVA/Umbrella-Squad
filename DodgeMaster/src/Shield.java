@@ -6,7 +6,7 @@ public class Shield extends Rectangle {
     //Constructor
 
     public Shield() {
-      
+
 
     }
 
