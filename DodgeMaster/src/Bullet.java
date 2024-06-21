@@ -1,35 +1,41 @@
-// Classe Bullet que herda da classe Rectangle
-public class Bullet extends Rectangle {
+import java.awt.*;
 
-    // Variável para armazenar o dano da bala que seria de valor 10
-    private int damage = 10;
+public abstract class Bullet extends Shape {
+    // Additional attributes for Bullet
+    private int damage;
 
-    // Construtor que define o dano inicial da bala
-    public Bullet(int damage) {
-        // Inicializa o dano com o valor recebido
+    public abstract void draw(Graphics g);
+
+
+    // Constructors
+    public Bullet(int x, int y, int speedX, int speedY, int damage) {
+        super(x, y, speedX, speedY);
         this.damage = damage;
     }
 
-    // Método para obter o dano atual da bala
-    public int getDamage() {
+    public Bullet() {
+        super();
+        this.damage = 10; // default damage
+    }
 
-        // Retorna o dano atual
+    // Getters and Setters for additional attributes
+    public int getDamage() {
         return damage;
     }
 
-    // Método para configurar um novo valor de dano para a bala
     public void setDamage(int damage) {
-
-        // Define um novo valor de dano
         this.damage = damage;
     }
 
-    // Método principal para teste da classe Bullet
-    public static void main(String[] args) {
-        // Cria uma bala com dano inicial de 10
-        Bullet bullet = new Bullet(10);
-
-        // Mostra o dano da bala criada
-        System.out.println("Dano da bala: " + bullet.getDamage());
+    // Overriding toString to include new attributes
+    @Override
+    public String toString() {
+        return "Bullet{" +
+                "x=" + getX() +
+                ", y=" + getY() +
+                ", speedX=" + getSpeedX() +
+                ", speedY=" + getSpeedY() +
+                ", damage=" + damage +
+                '}';
     }
 }
