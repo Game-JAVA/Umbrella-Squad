@@ -1,6 +1,10 @@
+import java.awt.event.KeyEvent;
+
 public class Player extends Rectangle {
     //Atributos
     private int health = 100 ;
+
+    private int pX,pY;
 
     //Construtor
 
@@ -10,14 +14,45 @@ public class Player extends Rectangle {
 
 
     //Metodos
-    public void move(int screenWidth, int screenHeight) {
-        super.move(screenWidth, screenHeight);
+    public void move() {
+        int newX = getX() + pX;
+        int newY = getY() + pY;
+    }
 
-        // Collision Treatment
-        if (super.getX() < 0 || super.getX() + super.width > screenWidth)
-            super.setSpeedX(super.getSpeedX() * -1);
-        if (super.getY() < 0 || super.getY() + super.height > screenHeight)
-            super.setSpeedY(super.getSpeedY() * -1);
+    //Reconhecer quando a tecla está pressionada
+    public void keyPressed (KeyEvent tecla){
+        int code = tecla.getKeyCode();
+
+        if (code == KeyEvent.VK_UP) {
+            pY = -2;
+        }
+        if (code == KeyEvent.VK_DOWN) {
+            pY = 2;
+        }
+        if (code == KeyEvent.VK_RIGHT) {
+            pX = 2;
+        }
+        if (code == KeyEvent.VK_LEFT) {
+            pX = -2;
+        }
+    }
+
+    //Reconhecer quando a tecla não está pressionada
+    public void keyRelease (KeyEvent tecla){
+        int code = tecla.getKeyCode();
+
+        if (code == KeyEvent.VK_UP) {
+            pY = 0;
+        }
+        if (code == KeyEvent.VK_DOWN) {
+            pY = 0;
+        }
+        if (code == KeyEvent.VK_RIGHT) {
+            pX = 0;
+        }
+        if (code == KeyEvent.VK_LEFT) {
+            pX = 0;
+        }
     }
 
 }
