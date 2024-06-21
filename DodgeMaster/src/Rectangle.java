@@ -24,7 +24,7 @@ public class Rectangle extends Shape {
     public void move(int screenWidth, int screenHeight) {
         super.move(screenWidth, screenHeight);
 
-        // Collision Treatment
+        // Collision Treatment with the window border
         if (super.getX() < 0 || super.getX() + this.width > screenWidth)
             super.setSpeedX(super.getSpeedX() * -1);
         if (super.getY() < 0 || super.getY() + this.height > screenHeight)
