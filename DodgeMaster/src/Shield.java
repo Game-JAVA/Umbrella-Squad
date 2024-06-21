@@ -6,8 +6,8 @@ public class Shield extends Rectangle {
     //Constructor
 
     public Shield() {
-        this.health = health;
-        this.diameter = diameter;
+      
+
     }
 
 
