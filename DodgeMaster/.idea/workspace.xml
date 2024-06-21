@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cc89fddd-72a7-4a64-be23-7d7aaa0c3480" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/ImagePanel.java" afterDir="false" />
+    <list default="true" id="cc89fddd-72a7-4a64-be23-7d7aaa0c3480" name="Changes" comment="merge:Fix branch conflicts - fix conflicts between branch and file changes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,15 +36,14 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Application.Bullet.executor": "Run",
     "Application.Main.executor": "Run",
     "Application.Screensaver.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "feat/thomas/main",
+    "git-widget-placeholder": "feature/matheus__class__player",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Projetos/Estagio.Facul/Umbrella-Squad/DodgeMaster",
+    "last_opened_file_path": "C:/Apagar/Sreceensaver2",
     "project.structure.last.edited": "Facets",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.2"
@@ -70,5 +67,9 @@
       <updated>1718737078422</updated>
     </task>
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="merge:Fix branch conflicts - fix conflicts between branch and file changes" />
+    <option name="LAST_COMMIT_MESSAGE" value="merge:Fix branch conflicts - fix conflicts between branch and file changes" />
   </component>
 </project>

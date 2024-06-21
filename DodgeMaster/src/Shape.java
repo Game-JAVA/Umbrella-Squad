@@ -19,12 +19,12 @@ public abstract class Shape {
     public Shape() {
         this.x = 100;
         this.y = 100;
-        this.speedX = 0;
-        this.speedY = 0;
+        this.speedX = 5;
+        this.speedY = 5;
     }
     // }
 
-    // Methods {
+    // Constructors {
     public void move() {
         this.x += speedX;
         this.y += speedY;
