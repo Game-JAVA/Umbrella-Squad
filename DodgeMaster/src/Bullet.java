@@ -1,21 +1,24 @@
 import java.awt.*;
 
-public abstract class Bullet extends Shape {
+public class Bullet extends Rectangle {
     // Additional attributes for Bullet
     private int damage;
 
-    public abstract void draw(Graphics g);
-
 
     // Constructors
-    public Bullet(int x, int y, int speedX, int speedY, int damage) {
-        super(x, y, speedX, speedY);
+    public Bullet(int x, int y, int speedX, int speedY, int width, int height, int damage) {
+        super(x, y, speedX, speedY, width, height);
         this.damage = damage;
     }
 
     public Bullet() {
-        super();
         this.damage = 10; // default damage
+    }
+
+    //Methods
+    @Override
+    public void move(int screenWidth, int screenHeight) {
+        super.move(screenWidth, screenHeight);
     }
 
     // Getters and Setters for additional attributes
