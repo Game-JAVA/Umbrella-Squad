@@ -1,58 +1,92 @@
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class Player extends Rectangle {
-    //Atributos
-    private int health = 100 ;
+    // Attributes
+    private int health;
+    private int speedIndex;
+    private JPanel playerPanel;         // Turning the player in it's own panel
+    private BufferedImage playerImage;  // Buffered image to it's sprites
 
-    private int pX,pY;
-
-    //Construtor
-
-    public Player() {
+    // Constructor
+    public Player(int x, int y, int speedX, int speedY, int width, int height, int health, int speedIndex, String imagePath) {
+        // Basic constructor
+        super(x, y, speedX, speedY, width, height);
         this.health = health;
+        this.speedIndex = speedIndex;
+
+        // Load player image
+        try {
+            playerImage = ImageIO.read(new File(imagePath));
+        } catch (IOException e) {e.printStackTrace();}
+
+        // Initialize the player panel
+        playerPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                draw(g);
+            }
+        };
+        playerPanel.setBounds(x, y, width, height);
+    }
+    // }
+
+    // Methods
+    @Override
+    public void move(int screenWidth, int screenHeight) {
+        super.move(screenWidth, screenHeight);
+        playerPanel.setLocation(getX(), getY());
     }
 
-
-    //Metodos
-    public void move() {
-        int newX = getX() + pX;
-        int newY = getY() + pY;
+    public void draw(Graphics g) {
+        g.drawImage(playerImage, 0, 0, getWidth(), getHeight(), null);
     }
 
-    //Reconhecer quando a tecla está pressionada
+        // Recognize key press
     public void keyPressed (KeyEvent tecla){
         int code = tecla.getKeyCode();
 
-        if (code == KeyEvent.VK_UP) {
-            pY = -2;
-        }
-        if (code == KeyEvent.VK_DOWN) {
-            pY = 2;
-        }
-        if (code == KeyEvent.VK_RIGHT) {
-            pX = 2;
-        }
-        if (code == KeyEvent.VK_LEFT) {
-            pX = -2;
-        }
+        if (code == KeyEvent.VK_UP) {super.setSpeedY(-speedIndex);}
+        if (code == KeyEvent.VK_DOWN) {super.setSpeedY(speedIndex);}
+        if (code == KeyEvent.VK_RIGHT) {super.setSpeedX(speedIndex);}
+        if (code == KeyEvent.VK_LEFT) {super.setSpeedX(-speedIndex);}
     }
 
-    //Reconhecer quando a tecla não está pressionada
+        // Recognize key release
     public void keyRelease (KeyEvent tecla){
         int code = tecla.getKeyCode();
 
-        if (code == KeyEvent.VK_UP) {
-            pY = 0;
-        }
-        if (code == KeyEvent.VK_DOWN) {
-            pY = 0;
-        }
-        if (code == KeyEvent.VK_RIGHT) {
-            pX = 0;
-        }
-        if (code == KeyEvent.VK_LEFT) {
-            pX = 0;
-        }
+        if (code == KeyEvent.VK_UP) {super.setSpeedY(0);}
+        if (code == KeyEvent.VK_DOWN) {super.setSpeedY(0);}
+        if (code == KeyEvent.VK_RIGHT) {super.setSpeedX(0);}
+        if (code == KeyEvent.VK_LEFT) {super.setSpeedX(0);}
     }
+    // }
 
+    // Getters and Setters
+    public int getHealth() {return health;}
+    public int getSpeedIndex() {return speedIndex;}
+    public JPanel getPlayerPanel() {return playerPanel;}
+    public BufferedImage getPlayerImage() {return playerImage;}
+
+    public void setHealth(int health) {this.health = health;}
+    public void setSpeedIndex(int speedIndex) {this.speedIndex = speedIndex;}
+    public void setPlayerPanel(JPanel playerPanel) {this.playerPanel = playerPanel;}
+    public void setPlayerImage(BufferedImage playerImage) {this.playerImage = playerImage;}
+    // }
+
+    // toString
+    @Override
+    public String toString() {
+        return super.toString() + " Player{" +
+                "health=" + health +
+                ", speedIndex=" + speedIndex +
+                '}';
+    }
 }

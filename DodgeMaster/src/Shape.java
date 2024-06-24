@@ -29,7 +29,7 @@ public abstract class Shape {
         this.x += speedX;
         this.y += speedY;
     }
-    // Signatures to handle collision treatment
+        // Signatures to handle collision treatment with the window border
     protected void move(int screenWidth, int screenHeight) {
         this.x += speedX;
         this.y += speedY;
@@ -76,4 +76,3 @@ public abstract class Shape {
                 '}';
     }
 }
-
