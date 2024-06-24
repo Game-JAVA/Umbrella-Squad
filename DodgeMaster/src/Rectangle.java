@@ -32,7 +32,6 @@ public class Rectangle extends Shape {
     }
 
     public void draw(Graphics g) {
-        // *Still need to figure out how to import the sprite*
         g.fillRect(super.getX(), super.getY(), this.width, this.height);
     }
     // }

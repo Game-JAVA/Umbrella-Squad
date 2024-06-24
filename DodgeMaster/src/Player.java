@@ -30,18 +30,24 @@ public class Player extends Rectangle {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                if (playerImage != null)  // Verifies if the player was fully drawn, then adjust the image to it's size
-                    g.drawImage(playerImage, 0, 0, getWidth(), getHeight(), null);
-                else {
-                    g.setColor(Color.RED); // Fallback in case image fails to load
-                    g.fillRect(0, 0, getWidth(), getHeight());
-                }
+                draw(g);
             }
         };
+        playerPanel.setBounds(x, y, width, height);
     }
     // }
 
     // Methods
+    @Override
+    public void move(int screenWidth, int screenHeight) {
+        super.move(screenWidth, screenHeight);
+        playerPanel.setLocation(getX(), getY());
+    }
+
+    public void draw(Graphics g) {
+        g.drawImage(playerImage, 0, 0, getWidth(), getHeight(), null);
+    }
+
         // Recognize key press
     public void keyPressed (KeyEvent tecla){
         int code = tecla.getKeyCode();
@@ -56,8 +62,10 @@ public class Player extends Rectangle {
     public void keyRelease (KeyEvent tecla){
         int code = tecla.getKeyCode();
 
-        if (code == KeyEvent.VK_UP || code == KeyEvent.VK_DOWN) {super.setSpeedY(0);}
-        if (code == KeyEvent.VK_RIGHT || code == KeyEvent.VK_LEFT) {super.setSpeedX(0);}
+        if (code == KeyEvent.VK_UP) {super.setSpeedY(0);}
+        if (code == KeyEvent.VK_DOWN) {super.setSpeedY(0);}
+        if (code == KeyEvent.VK_RIGHT) {super.setSpeedX(0);}
+        if (code == KeyEvent.VK_LEFT) {super.setSpeedX(0);}
     }
     // }
 
@@ -74,7 +82,6 @@ public class Player extends Rectangle {
     // }
 
     // toString
-
     @Override
     public String toString() {
         return super.toString() + " Player{" +
