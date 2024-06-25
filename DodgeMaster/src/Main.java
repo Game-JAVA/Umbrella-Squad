@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferStrategy;
 
 @SuppressWarnings("serial")
 public class Main extends javax.swing.JFrame implements Runnable{
@@ -8,7 +9,7 @@ public class Main extends javax.swing.JFrame implements Runnable{
         // Frame size
     private int width = 1360;
     private int height = 768;
-        // Background
+        // Background panel
     private ImagePanel backgroundPanel;
         // Keys (When the keyboard is pressed, the respective key is set true)
     private boolean left;
@@ -17,16 +18,11 @@ public class Main extends javax.swing.JFrame implements Runnable{
     private boolean down;
     // }
 
+
     // Constructor
     public Main() {
         // Method to fetch initial setup
         initComponents();
-
-        // Frame config
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setExtendedState(JFrame.MAXIMIZED_BOTH);  // Starts at windowed maximized
-        setLayout(null); // Absolute Layout
-        setContentPane(new ImagePanel("../assets/bg_city.png"));
 
         // Keyboard listener
         addKeyListener(new java.awt.event.KeyAdapter() {
@@ -42,7 +38,11 @@ public class Main extends javax.swing.JFrame implements Runnable{
     }
 
     private void initComponents() {
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(width, height));
+        backgroundPanel = new ImagePanel("../assets/bg_city.png");
+        setContentPane(backgroundPanel);
+        pack();
     }
 
     @SuppressWarnings("unchecked")
@@ -81,7 +81,7 @@ public class Main extends javax.swing.JFrame implements Runnable{
             java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
 
-        java.awt.EventQueue.invokeLater(new Runnable() {
+        EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new Main().setVisible(true);
             }
@@ -96,6 +96,8 @@ public class Main extends javax.swing.JFrame implements Runnable{
 
         //
         while(true) {
+            // Repaint the panel
+            backgroundPanel.repaint();
             // Updates g
             g = getBufferStrategy().getDrawGraphics();
             // Clear the screen
@@ -103,11 +105,9 @@ public class Main extends javax.swing.JFrame implements Runnable{
             // Runtime:
 
 
-            // Appends the screen
-            getBufferStrategy().show();
 
             // Buffer in 16 milliseconds to approach the 60 fps
-            try {Thread.sleep(16);} catch (InterruptedException ex) {ex.printStackTrace();}
+            try {Thread.sleep(5);} catch (InterruptedException ex) {ex.printStackTrace();}
         }
     }
 }
