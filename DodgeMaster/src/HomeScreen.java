@@ -48,8 +48,8 @@ public class HomeScreen extends JFrame {
     }
 
     private void abrirTelaJogo() {
-        TelaJogo telaJogo = new TelaJogo(nivelSelecionado);
-        telaJogo.setVisible(true);
+        Gameplay gameplay = new Gameplay(nivelSelecionado);
+        gameplay.setVisible(true);
         this.dispose();
     }
 
