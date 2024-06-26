@@ -11,7 +11,7 @@ public class Gameplay extends javax.swing.JFrame implements Runnable{
     // }
 
     // Constructor
-    public Gameplay() {
+    public Gameplay(String dificult) {
         // Method to fetch initial setup
         initComponents();
 
@@ -44,7 +44,7 @@ public class Gameplay extends javax.swing.JFrame implements Runnable{
     }
 
     // Initiate the window
-    public static void main(String[] args) {EventQueue.invokeLater(() -> new Gameplay().setVisible(true));}
+    // public static void main(String[] args) {EventQueue.invokeLater(() -> new Gameplay().setVisible(true));}
 
     public void run() {
         while(true) {
