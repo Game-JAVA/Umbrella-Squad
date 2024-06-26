@@ -1,6 +1,6 @@
 import java.awt.*;
 
-public class Main extends javax.swing.JFrame implements Runnable{
+public class Gameplay extends javax.swing.JFrame implements Runnable{
     // Attributes {
         // Frame size
     private int width = 1360;
@@ -11,7 +11,7 @@ public class Main extends javax.swing.JFrame implements Runnable{
     // }
 
     // Constructor
-    public Main() {
+    public Gameplay() {
         // Method to fetch initial setup
         initComponents();
 
@@ -44,7 +44,7 @@ public class Main extends javax.swing.JFrame implements Runnable{
     }
 
     // Initiate the window
-    public static void main(String[] args) {EventQueue.invokeLater(() -> new Main().setVisible(true));}
+    public static void main(String[] args) {EventQueue.invokeLater(() -> new Gameplay().setVisible(true));}
 
     public void run() {
         while(true) {
