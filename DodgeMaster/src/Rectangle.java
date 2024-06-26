@@ -13,7 +13,12 @@ public class Rectangle extends Shape {
     }
 
         // No signatures overload
-    public Rectangle() {
+    public Rectangle(int width,int height) {
+        this.width = 100;
+        this.height = 100;
+    }
+
+    public Rectangle () {
         this.width = 100;
         this.height = 100;
     }
