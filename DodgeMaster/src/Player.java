@@ -10,19 +10,17 @@ public class Player extends Rectangle {
     // Attributes
     private int health;
     private int speedIndex;
-    private JPanel playerPanel;         // Turning the player in it's own panel
+    private JPanel playerPanel;         // Turning the player in its own panel
     private BufferedImage playerImage;  // Buffered image to it's sprites
 
     // Constructor
     public Player(int x, int y, int speedX, int speedY, int width, int height, int health, int speedIndex, String imagePath) {
-        // Basic constructor
         super(x, y, speedX, speedY, width, height);
         this.health = health;
         this.speedIndex = speedIndex;
 
         // Load player image
-        try {
-            playerImage = ImageIO.read(new File(imagePath));
+        try { playerImage = ImageIO.read(new File(imagePath));
         } catch (IOException e) {e.printStackTrace();}
 
         // Initialize the player panel
@@ -33,6 +31,7 @@ public class Player extends Rectangle {
                 draw(g);
             }
         };
+        playerPanel.setOpaque(false);
         playerPanel.setBounds(x, y, width, height);
     }
     // }
@@ -71,7 +70,7 @@ public class Player extends Rectangle {
 
     // Getters and Setters
     public int getHealth() {return health;}
-    public int getSpeedIndex() {return speedIndex;}
+    public double getSpeedIndex() {return speedIndex;}
     public JPanel getPlayerPanel() {return playerPanel;}
     public BufferedImage getPlayerImage() {return playerImage;}
 
@@ -81,12 +80,4 @@ public class Player extends Rectangle {
     public void setPlayerImage(BufferedImage playerImage) {this.playerImage = playerImage;}
     // }
 
-    // toString
-    @Override
-    public String toString() {
-        return super.toString() + " Player{" +
-                "health=" + health +
-                ", speedIndex=" + speedIndex +
-                '}';
-    }
 }

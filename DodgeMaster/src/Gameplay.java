@@ -1,50 +1,56 @@
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
-public class Gameplay extends JFrame {
+public class Gameplay extends javax.swing.JFrame implements Runnable{
+    // Attributes {
+        // Frame size
+    private int width = 1360;
+    private int height = 768;
+        // Entities
+    private ImagePanel backgroundPanel;
+    private Player player;
+    // }
 
-    public Gameplay(String nivel) {
-        // Creating the main JFrame (window) for the game
-        JFrame frame = new JFrame("Dodge Master");
+    // Constructor
+    public Gameplay(String dificult) {
+        // Method to fetch initial setup
+        initComponents();
 
-        // Creating a player instance with initial parameters
-        Player david = new Player(0, 0, 0, 0, 100, 100, 3, 10, "../assets/david_sprite_01.png");
-
-        // Setting up the game window
-        frame.setMinimumSize(new Dimension(1360, 768)); // Minimum window size
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Close operation
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH); // Start in fullscreen
-        frame.setContentPane(new ImagePanel("../assets/bg_city.png")); // Setting background
-        frame.setLayout(null); // Using null layout for absolute positioning
-
-        // Adding the player's panel to the frame
-        frame.add(david.getPlayerPanel());
-
-        // Making the frame visible
-        frame.setVisible(true);
-
-        // Game loop to update game state
-        new Timer(16, e -> {
-            david.move(frame.getWidth(), frame.getHeight()); // Update player position
-            david.getPlayerPanel().repaint(); // Redraw player on the frame
-        }).start();
-
-        // Player interaction via keyboard input
-        frame.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                david.keyPressed(e); // Handle key press events in Player class
+        // Keyboard listener
+        addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                player.keyPressed(evt);
             }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-                david.keyRelease(e); // Handle key release events in Player class
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                player.keyRelease(evt);
             }
         });
 
-        // Focus the JFrame to capture keyboard input
-        frame.requestFocus();
+        setVisible(true);
+        // Buffering
+        createBufferStrategy(2);
+        Thread t = new Thread(this);
+        t.start();
+    }
+
+    private void initComponents() {
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMinimumSize(new Dimension(width, height));
+        player = new Player(100, 100, 0, 0, 50, 50, 100, 2, "../assets/david_sprite_01.png");
+        backgroundPanel = new ImagePanel("../assets/bg_city.png");
+        backgroundPanel.add(player.getPlayerPanel());
+        backgroundPanel.setLayout(null);  // Allows for absolute positioning
+        setContentPane(backgroundPanel);
+        pack();
+    }
+
+    // Initiate the window
+    // public static void main(String[] args) {EventQueue.invokeLater(() -> new Gameplay().setVisible(true));}
+
+    public void run() {
+        while(true) {
+            player.move(width, height);
+            // Buffer to handle the refresh rate
+            try {Thread.sleep(6);} catch (InterruptedException ex) {ex.printStackTrace();}
+        }
     }
 }
