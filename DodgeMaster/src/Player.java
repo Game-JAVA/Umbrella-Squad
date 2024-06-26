@@ -80,9 +80,4 @@ public class Player extends Rectangle {
     public void setPlayerImage(BufferedImage playerImage) {this.playerImage = playerImage;}
     // }
 
-    // toString
-    @Override
-    public String toString() {
-        return STR."\{super.toString()} Player{health=\{health}, speedIndex=\{speedIndex}\{'}'}";
-    }
 }
