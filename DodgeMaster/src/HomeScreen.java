@@ -10,7 +10,6 @@ public class HomeScreen extends JFrame {
 
     public HomeScreen() {
         setTitle("Menu Principal");
-        setSize(900, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -18,7 +17,6 @@ public class HomeScreen extends JFrame {
         // panel.setLayout(new GridLayout(3, 1));
 
         JButton iniciarButton = new JButton("Iniciar", new ImageIcon("./iconButton.jpg"));
-
         iniciarButton.setBackground(Color.BLUE);
         iniciarButton.setForeground(Color.RED);
         iniciarButton.setFont(new Font("Arial", Font.BOLD, 14));
@@ -57,7 +55,9 @@ public class HomeScreen extends JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new HomeScreen().setVisible(true);
+                HomeScreen frame = new HomeScreen();
+                frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                frame.setVisible(true);
             }
         });
     }
