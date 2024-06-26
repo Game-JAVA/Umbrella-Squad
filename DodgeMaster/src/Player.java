@@ -31,6 +31,7 @@ public class Player extends Rectangle {
                 draw(g);
             }
         };
+        playerPanel.setOpaque(false);
         playerPanel.setBounds(x, y, width, height);
     }
     // }

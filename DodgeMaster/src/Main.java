@@ -35,10 +35,10 @@ public class Main extends javax.swing.JFrame implements Runnable{
     private void initComponents() {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(width, height));
-        backgroundPanel = new ImagePanel("../assets/bg_city.png");
         player = new Player(100, 100, 0, 0, 50, 50, 100, 2, "../assets/david_sprite_01.png");
-        backgroundPanel.setLayout(null);  // Allows for absolute positioning
+        backgroundPanel = new ImagePanel("../assets/bg_city.png");
         backgroundPanel.add(player.getPlayerPanel());
+        backgroundPanel.setLayout(null);  // Allows for absolute positioning
         setContentPane(backgroundPanel);
         pack();
     }
@@ -49,7 +49,7 @@ public class Main extends javax.swing.JFrame implements Runnable{
     public void run() {
         while(true) {
             player.move(width, height);
-            // Buffer in 16 milliseconds to approach the 60 fps
+            // Buffer to handle the refresh rate
             try {Thread.sleep(6);} catch (InterruptedException ex) {ex.printStackTrace();}
         }
     }
