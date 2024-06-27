@@ -48,6 +48,7 @@ public class Player extends Rectangle {
 
     public void draw(Graphics g) {g.drawImage(playerImage, 0, 0, getWidth(), getHeight(), null);}
 
+    // Movement Section {
     // Recognize key press
     public void keyPressed(KeyEvent key) {
         pressedKeys.add(key.getKeyCode());
@@ -64,15 +65,15 @@ public class Player extends Rectangle {
         int speedX = 0;
         int speedY = 0;
 
-        if (pressedKeys.contains(KeyEvent.VK_UP))       {speedY -= speedIndex;}
-        if (pressedKeys.contains(KeyEvent.VK_DOWN))     {speedY += speedIndex;}
-        if (pressedKeys.contains(KeyEvent.VK_LEFT))     {speedX -= speedIndex;}
-        if (pressedKeys.contains(KeyEvent.VK_RIGHT))    {speedX += speedIndex;}
+        if (pressedKeys.contains(KeyEvent.VK_UP) || pressedKeys.contains(KeyEvent.VK_W))       {speedY -= speedIndex;}
+        if (pressedKeys.contains(KeyEvent.VK_RIGHT) || pressedKeys.contains(KeyEvent.VK_D))    {speedX += speedIndex;}
+        if (pressedKeys.contains(KeyEvent.VK_DOWN) || pressedKeys.contains(KeyEvent.VK_S))     {speedY += speedIndex;}
+        if (pressedKeys.contains(KeyEvent.VK_LEFT) || pressedKeys.contains(KeyEvent.VK_A))     {speedX -= speedIndex;}
 
         super.setSpeedX(speedX);
         super.setSpeedY(speedY);
     }
-    // }
+    // }}
 
     // Getters and Setters
     public int getHealth() {return health;}
