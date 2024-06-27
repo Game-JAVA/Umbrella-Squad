@@ -12,15 +12,18 @@ public class Rectangle extends Shape {
         this.height = height;
     }
 
-        // No signatures overload
-    public Rectangle(int width,int height) {
-        this.width = 100;
-        this.height = 100;
+        // Simple Constructor
+    public Rectangle(int x, int y, int width, int height) {
+        super(x, y);
+        this.width = width;
+        this.height = height;
     }
 
-    public Rectangle () {
-        this.width = 100;
-        this.height = 100;
+        // Shield Constructor
+    public Rectangle(int x, int y, int diameter) {
+        super(x, y);
+        this.width = diameter;
+        this.height = diameter;
     }
     // }
 

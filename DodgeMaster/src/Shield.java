@@ -1,42 +1,28 @@
-import java.awt.*;
-
 public class Shield extends Rectangle {
-    //Atributos
+    // Attributes
     private int diameter;
+    private int durability;
 
-    //Construtor
-    public Shield(int diameter) {
-        super(diameter, diameter);
+    // Constructor
+    public Shield(int x, int y, int diameter, int durability) {
+        super(x, y, diameter);
         this.diameter = diameter;
+        this.durability = durability;
     }
 
-    public Shield(){
-        super();
-        super.setHeight(super.getWidth());
-        this.diameter =super.getWidth();
-    }
+    // Methods
+    // Getters and Setters
+    public int getDiameter() {return diameter;}
+    public void setDiameter(int diameter) {this.diameter = diameter;}
+    public int getDurability() {return durability;}
+    public void setDurability(int durability) {this.durability = durability;}
 
-    //Metodos
-
-
-    //get set
-
-    public int getDiameter() {
-        return diameter;
-    }
-
-    public void setDiameter(int diameter) {
-        this.diameter = diameter;
-    }
-
-
-    //toString
-
-
+    // toString
     @Override
     public String toString() {
-        return "Shield{" +
+        return super.toString() + "Shield{" +
                 "diameter=" + diameter +
+                ", durability=" + durability +
                 '}';
     }
 }

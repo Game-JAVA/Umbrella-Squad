@@ -14,8 +14,8 @@ public class Player extends Rectangle {
     private BufferedImage playerImage;  // Buffered image to it's sprites
 
     // Constructor
-    public Player(int x, int y, int speedX, int speedY, int width, int height, int health, int speedIndex, String imagePath) {
-        super(x, y, speedX, speedY, width, height);
+    public Player(int x, int y, int width, int height, int health, int speedIndex, String imagePath) {
+        super(x, y, width, height);
         this.health = health;
         this.speedIndex = speedIndex;
 

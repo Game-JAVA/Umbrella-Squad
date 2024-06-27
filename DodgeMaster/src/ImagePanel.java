@@ -6,9 +6,7 @@ public class ImagePanel extends JPanel {
     private Image backgroundImage;
 
     // Constructors
-    public ImagePanel(String imagePath) {
-        backgroundImage = new ImageIcon(imagePath).getImage();
-    }
+    public ImagePanel(String imagePath) {backgroundImage = new ImageIcon(imagePath).getImage();}
 
     // Methods {
     @Override

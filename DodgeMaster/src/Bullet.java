@@ -1,39 +1,25 @@
-import java.awt.*;
-
 public class Bullet extends Rectangle {
-    // Additional attributes for Bullet
+    // Attributes
     private int damage;
 
-
-    // Constructors
-    public Bullet(int x, int y, int speedX, int speedY, int width, int height, int damage) {
-        super(x, y, speedX, speedY, width, height);
+    // Constructor
+    public Bullet(int x, int y, int width, int height, int damage) {
+        super(x, y, width, height);
         this.damage = damage;
     }
 
-    public Bullet() {
-        this.damage = 10; // default damage
-    }
-
-    //Methods
+    // Methods
     @Override
-    public void move(int screenWidth, int screenHeight) {
-        super.move(screenWidth, screenHeight);
-    }
+    public void move(int screenWidth, int screenHeight) {super.move(screenWidth, screenHeight);}
 
-    // Getters and Setters for additional attributes
-    public int getDamage() {
-        return damage;
-    }
+    // Getters and Setters
+    public int getDamage() {return damage;}
+    public void setDamage(int damage) {this.damage = damage;}
 
-    public void setDamage(int damage) {
-        this.damage = damage;
-    }
-
-    // Overriding toString to include new attributes
+    // toString
     @Override
     public String toString() {
-        return "Bullet{" +
+        return super.toString() + " Bullet{" +
                 "x=" + getX() +
                 ", y=" + getY() +
                 ", speedX=" + getSpeedX() +
