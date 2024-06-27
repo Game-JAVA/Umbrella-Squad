@@ -16,12 +16,8 @@ public class Gameplay extends javax.swing.JFrame implements Runnable{
 
         // Keyboard listener
         addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                player.keyPressed(evt);
-            }
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                player.keyRelease(evt);
-            }
+            public void keyPressed(java.awt.event.KeyEvent evt) {player.keyPressed(evt);}
+            public void keyReleased(java.awt.event.KeyEvent evt) {player.keyRelease(evt);}
         });
 
         setVisible(true);
@@ -35,7 +31,7 @@ public class Gameplay extends javax.swing.JFrame implements Runnable{
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(width, height));
-        player = new Player(100, 100, 80, 90, 100, 2, "../assets/david_sprite_01.png");
+        player = new Player((getWidth()/2), (getHeight()/2), 80, 90, 100, 2, "../assets/david_sprite_01.png");
         // Entities
         ImagePanel backgroundPanel = new ImagePanel("../assets/bg_city.png");
         backgroundPanel.add(player.getPlayerPanel());
@@ -44,9 +40,10 @@ public class Gameplay extends javax.swing.JFrame implements Runnable{
         pack();
     }
 
+    // Game loop
     public void run() {
         while(true) {
-            player.move(width, height);
+            player.move(getWidth(), getHeight());
             // Buffer to handle the refresh rate
             try {Thread.sleep(6);} catch (InterruptedException ex) {ex.printStackTrace();}
         }
