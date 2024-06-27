@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.awt.*;
 
 public class Gameplay extends javax.swing.JFrame implements Runnable{
@@ -5,8 +6,6 @@ public class Gameplay extends javax.swing.JFrame implements Runnable{
         // Frame size
     private int width = 1360;
     private int height = 768;
-        // Entities
-    private ImagePanel backgroundPanel;
     private Player player;
     // }
 
@@ -35,16 +34,15 @@ public class Gameplay extends javax.swing.JFrame implements Runnable{
     private void initComponents() {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(width, height));
-        player = new Player(100, 100, 0, 0, 50, 50, 100, 2, "../assets/david_sprite_01.png");
-        backgroundPanel = new ImagePanel("../assets/bg_city.png");
+        player = new Player(100, 100, 50, 50, 100, 2, "../assets/david_sprite_01.png");
+        // Entities
+        ImagePanel backgroundPanel = new ImagePanel("../assets/bg_city.png");
         backgroundPanel.add(player.getPlayerPanel());
         backgroundPanel.setLayout(null);  // Allows for absolute positioning
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setContentPane(backgroundPanel);
         pack();
     }
-
-    // Initiate the window
-    // public static void main(String[] args) {EventQueue.invokeLater(() -> new Gameplay().setVisible(true));}
 
     public void run() {
         while(true) {

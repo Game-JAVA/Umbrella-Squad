@@ -15,16 +15,16 @@ public abstract class Shape {
         this.speedY = speedY;
     }
 
-        // No signatures overload
-    public Shape() {
-        this.x = 100;
-        this.y = 100;
-        this.speedX = 5;
-        this.speedY = 5;
+        // Position Constructor
+    public Shape(int x, int y) {
+        this.x = x;
+        this.y = y;
+        this.speedX = 0;
+        this.speedY = 0;
     }
     // }
 
-    // Constructors {
+    // Methods {
     public void move() {
         this.x += speedX;
         this.y += speedY;
