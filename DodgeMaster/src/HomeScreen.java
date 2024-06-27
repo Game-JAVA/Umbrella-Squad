@@ -23,7 +23,7 @@ public class HomeScreen extends JFrame {
                 super.paintComponent(g);
                 // Desenha a imagem de fundo
                 try {
-                    BufferedImage backgroundImage = ImageIO.read(new File("../assets/background.jpg"));
+                    BufferedImage backgroundImage = ImageIO.read(new File("../assets/city.png"));
                     g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -39,16 +39,10 @@ public class HomeScreen extends JFrame {
         panel.setOpaque(false); // Deixa o painel transparente para que o fundo com imagem seja visível
         panel.setLayout(new GridBagLayout());
 
-        // Cria o título do jogo
-        JLabel tituloJogo = new JLabel("Dodge Master");
-        tituloJogo.setFont(new Font("segoe script", Font.BOLD, 70));
-        tituloJogo.setForeground(Color.WHITE);
-
         // Cria o botão iniciar com a imagem
-        ImageIcon image = new ImageIcon("src/iconButton.jpg");
+        ImageIcon image = new ImageIcon("../assets/botao.png");
         JButton iniciarButton = new JButton(image);
-        iniciarButton.setBackground(Color.BLUE);
-        iniciarButton.setForeground(Color.RED);
+        iniciarButton.setSize(new Dimension(4, 5));
         iniciarButton.setToolTipText("Clique para iniciar o jogo");
 
         iniciarButton.addActionListener(e -> abrirTelaJogo());
@@ -65,15 +59,11 @@ public class HomeScreen extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(40, 40, 10, 40);
+        gbc.insets = new Insets(120, 40, 0, 40);
         JLabel label = new JLabel("Selecione o nível:");
         label.setForeground(Color.WHITE);
         label.setFont(new Font("segoe script", Font.BOLD, 20));
         panel.add(label);
-
-        // Adiciona o título do jogo
-        gbc.gridy = 0;
-        panel.add(tituloJogo, gbc);
 
         // Adiciona o label "Selecione o nível:"
         gbc.gridy = 1;
@@ -81,7 +71,7 @@ public class HomeScreen extends JFrame {
 
         // Adiciona o JComboBox
         gbc.gridy = 2;
-        gbc.insets = new Insets(10, 40, 40, 40);
+        gbc.insets = new Insets(0, 40, 10, 40);
         panel.add(nivelComboBox, gbc);
 
         // Adiciona o botão "Iniciar"
