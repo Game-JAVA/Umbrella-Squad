@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,16 +9,18 @@ public class HomeScreen extends JFrame {
 
     private JComboBox<String> nivelComboBox;
     private String nivelSelecionado = "Fácil";
+    private JPanel panel;
 
     public HomeScreen() {
         setTitle("Menu Principal");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
 
-        JPanel panel = new JPanel();
-        // panel.setLayout(new GridLayout(3, 1));
+        panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
 
-        JButton iniciarButton = new JButton("Iniciar", new ImageIcon("./iconButton.jpg"));
+        JButton iniciarButton = new JButton("Iniciar", new ImageIcon("iconButton.jpg"));
         iniciarButton.setBackground(Color.BLUE);
         iniciarButton.setForeground(Color.RED);
         iniciarButton.setFont(new Font("Arial", Font.BOLD, 14));
@@ -38,11 +42,21 @@ public class HomeScreen extends JFrame {
             }
         });
 
-        panel.add(new JLabel("Selecione o nível:"));
-        panel.add(nivelComboBox);
-        panel.add(iniciarButton);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(40, 40, 40, 40);
+        panel.add(new JLabel("Selecione o nível:"), gbc);
 
-        add(panel);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        panel.add(nivelComboBox, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        panel.add(iniciarButton, gbc);
+
+        add(panel, BorderLayout.CENTER);
     }
 
     private void abrirTelaJogo() {
