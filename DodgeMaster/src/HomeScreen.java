@@ -14,7 +14,6 @@ public class HomeScreen extends JFrame {
         setTitle("Menu Principal");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setExtendedState(JFrame.MAXIMIZED_BOTH); // Maximiza a janela
-        setUndecorated(true); // Remove as decorações padrão do sistema operacional (bordas)
         setLayout(new BorderLayout());
 
         // Cria um JPanel para atuar como o painel de fundo com imagem
@@ -24,7 +23,7 @@ public class HomeScreen extends JFrame {
                 super.paintComponent(g);
                 // Desenha a imagem de fundo
                 try {
-                    BufferedImage backgroundImage = ImageIO.read(new File("../assets/background.jpg"));
+                    BufferedImage backgroundImage = ImageIO.read(new File("../assets/city.png"));
                     g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -41,31 +40,42 @@ public class HomeScreen extends JFrame {
         panel.setLayout(new GridBagLayout());
 
         // Cria o botão iniciar com a imagem
-        ImageIcon image = new ImageIcon("src/iconButton.jpg");
-        JButton iniciarButton = new JButton("Iniciar", image);
-        iniciarButton.setBackground(Color.BLUE);
-        iniciarButton.setForeground(Color.RED);
-        iniciarButton.setFont(new Font("Arial", Font.BOLD, 14));
-        iniciarButton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        ImageIcon image = new ImageIcon("../assets/botao.png");
+        JButton iniciarButton = new JButton(image);
+        iniciarButton.setSize(new Dimension(4, 5));
         iniciarButton.setToolTipText("Clique para iniciar o jogo");
 
         iniciarButton.addActionListener(e -> abrirTelaJogo());
 
         // Cria o JComboBox
         nivelComboBox = new JComboBox<>(new String[]{"Fácil", "Médio", "Difícil"});
-        nivelComboBox.addActionListener(e -> nivelSelecionado = (String) nivelComboBox.getSelectedItem());
+        nivelComboBox.setPreferredSize(new Dimension(150, 30)); // Ajuste o tamanho preferido conforme necessário
+        nivelComboBox.setFont(new Font("segoe script", Font.BOLD, 15));
+        nivelComboBox.setBackground(Color.WHITE); // Cor de fundo
+        nivelComboBox.setForeground(Color.BLUE); // Cor do texto
+        nivelComboBox.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1)); // Borda preta
 
         // Adiciona componentes ao painel
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(40, 40, 40, 40);
-        panel.add(new JLabel("Selecione o nível:"), gbc);
+        gbc.insets = new Insets(120, 40, 0, 40);
+        JLabel label = new JLabel("Selecione o nível:");
+        label.setForeground(Color.WHITE);
+        label.setFont(new Font("segoe script", Font.BOLD, 20));
+        panel.add(label);
 
+        // Adiciona o label "Selecione o nível:"
         gbc.gridy = 1;
+        panel.add(label, gbc);
+
+        // Adiciona o JComboBox
+        gbc.gridy = 2;
+        gbc.insets = new Insets(0, 40, 10, 40);
         panel.add(nivelComboBox, gbc);
 
-        gbc.gridy = 2;
+        // Adiciona o botão "Iniciar"
+        gbc.gridy = 3;
         panel.add(iniciarButton, gbc);
 
         // Adiciona o painel de controles ao painel de fundo
