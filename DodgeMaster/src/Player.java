@@ -5,6 +5,8 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Player extends Rectangle {
     // Attributes
@@ -12,6 +14,7 @@ public class Player extends Rectangle {
     private int speedIndex;
     private JPanel playerPanel;         // Turning the player in its own panel
     private BufferedImage playerImage;  // Buffered image to it's sprites
+    private Set<Integer> pressedKeys = new HashSet<>(); // Buffering inputs to smother movement
 
     // Constructor
     public Player(int x, int y, int width, int height, int health, int speedIndex, String imagePath) {
@@ -36,37 +39,41 @@ public class Player extends Rectangle {
     }
     // }
 
-    // Methods
+    // Methods {
     @Override
     public void move(int screenWidth, int screenHeight) {
         super.move(screenWidth, screenHeight);
         playerPanel.setLocation(getX(), getY());
     }
 
-    public void draw(Graphics g) {
-        g.drawImage(playerImage, 0, 0, getWidth(), getHeight(), null);
+    public void draw(Graphics g) {g.drawImage(playerImage, 0, 0, getWidth(), getHeight(), null);}
+
+    // Movement Section {
+    // Recognize key press
+    public void keyPressed(KeyEvent key) {
+        pressedKeys.add(key.getKeyCode());
+        updateSpeed();
     }
 
-        // Recognize key press
-    public void keyPressed (KeyEvent tecla){
-        int code = tecla.getKeyCode();
-
-        if (code == KeyEvent.VK_UP) {super.setSpeedY(-speedIndex);}
-        if (code == KeyEvent.VK_DOWN) {super.setSpeedY(speedIndex);}
-        if (code == KeyEvent.VK_RIGHT) {super.setSpeedX(speedIndex);}
-        if (code == KeyEvent.VK_LEFT) {super.setSpeedX(-speedIndex);}
+    // Recognize key release
+    public void keyRelease(KeyEvent key) {
+        pressedKeys.remove(key.getKeyCode());
+        updateSpeed();
     }
 
-        // Recognize key release
-    public void keyRelease (KeyEvent tecla){
-        int code = tecla.getKeyCode();
+    private void updateSpeed() {
+        int speedX = 0;
+        int speedY = 0;
 
-        if (code == KeyEvent.VK_UP) {super.setSpeedY(0);}
-        if (code == KeyEvent.VK_DOWN) {super.setSpeedY(0);}
-        if (code == KeyEvent.VK_RIGHT) {super.setSpeedX(0);}
-        if (code == KeyEvent.VK_LEFT) {super.setSpeedX(0);}
+        if (pressedKeys.contains(KeyEvent.VK_UP) || pressedKeys.contains(KeyEvent.VK_W))       {speedY -= speedIndex;}
+        if (pressedKeys.contains(KeyEvent.VK_RIGHT) || pressedKeys.contains(KeyEvent.VK_D))    {speedX += speedIndex;}
+        if (pressedKeys.contains(KeyEvent.VK_DOWN) || pressedKeys.contains(KeyEvent.VK_S))     {speedY += speedIndex;}
+        if (pressedKeys.contains(KeyEvent.VK_LEFT) || pressedKeys.contains(KeyEvent.VK_A))     {speedX -= speedIndex;}
+
+        super.setSpeedX(speedX);
+        super.setSpeedY(speedY);
     }
-    // }
+    // }}
 
     // Getters and Setters
     public int getHealth() {return health;}
