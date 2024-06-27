@@ -33,11 +33,23 @@ public class Rectangle extends Shape {
         super.move(screenWidth, screenHeight);
 
         // Collision Treatment with the window border
-        if (super.getX() < 0 || super.getX() + this.width > screenWidth)
-            super.setSpeedX(super.getSpeedX() * -1);
-        if (super.getY() < 0 || super.getY() + this.height > screenHeight)
-            super.setSpeedY(super.getSpeedY() * -1);
+        if (super.getX() < 0) {
+            super.setX(0);
+            super.setSpeedX(0);
+        } else if (super.getX() + this.width > screenWidth) {
+            super.setX(screenWidth - this.width);
+            super.setSpeedX(0);
+        }
+
+        if (super.getY() < 0) {
+            super.setY(0);
+            super.setSpeedY(0);
+        } else if (super.getY() + this.height > screenHeight) {
+            super.setY(screenHeight - this.height);
+            super.setSpeedY(0);
+        }
     }
+
 
     public void draw(Graphics g) {
         g.fillRect(super.getX(), super.getY(), this.width, this.height);

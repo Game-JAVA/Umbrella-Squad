@@ -32,14 +32,14 @@ public class Gameplay extends javax.swing.JFrame implements Runnable{
     }
 
     private void initComponents() {
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(width, height));
-        player = new Player(100, 100, 50, 50, 100, 2, "../assets/david_sprite_01.png");
+        player = new Player(100, 100, 90, 90, 100, 2, "../assets/david_sprite_01.png");
         // Entities
         ImagePanel backgroundPanel = new ImagePanel("../assets/bg_city.png");
         backgroundPanel.add(player.getPlayerPanel());
         backgroundPanel.setLayout(null);  // Allows for absolute positioning
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setContentPane(backgroundPanel);
         pack();
     }

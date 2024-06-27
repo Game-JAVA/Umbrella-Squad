@@ -43,9 +43,7 @@ public class Player extends Rectangle {
         playerPanel.setLocation(getX(), getY());
     }
 
-    public void draw(Graphics g) {
-        g.drawImage(playerImage, 0, 0, getWidth(), getHeight(), null);
-    }
+    public void draw(Graphics g) {g.drawImage(playerImage, 0, 0, getWidth(), getHeight(), null);}
 
         // Recognize key press
     public void keyPressed (KeyEvent tecla){
