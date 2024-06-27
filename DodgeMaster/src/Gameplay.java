@@ -35,7 +35,7 @@ public class Gameplay extends javax.swing.JFrame implements Runnable{
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(width, height));
-        player = new Player(100, 100, 90, 90, 100, 2, "../assets/david_sprite_01.png");
+        player = new Player(100, 100, 80, 90, 100, 2, "../assets/david_sprite_01.png");
         // Entities
         ImagePanel backgroundPanel = new ImagePanel("../assets/bg_city.png");
         backgroundPanel.add(player.getPlayerPanel());
