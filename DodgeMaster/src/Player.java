@@ -34,7 +34,7 @@ public class Player extends Rectangle {
                 draw(g);
             }
         };
-        playerPanel.setOpaque(false);
+        playerPanel.setOpaque(false);   // Handle transparency
         playerPanel.setBounds(x, y, width, height);
     }
     // }
@@ -89,9 +89,9 @@ public class Player extends Rectangle {
         updateSpeed();
     }
 
-    /*   The most recent key pressed in an axis is meant to be prioritized, this function take the top one and sums to
+    /* The most recent key pressed in an axis is meant to be prioritized, this function take the top one and sums to
     * a local variable to manage which direction the player must be: if I press only right the var ends as '+5' for
-    * example, and then it's assigned to the player speed attribute
+    * example, and then it's assigned to the player speed attribute.
     * */
     private void updateSpeed() {
         int speedX = 0;
@@ -130,4 +130,12 @@ public class Player extends Rectangle {
     public void setPlayerImage(BufferedImage playerImage) {this.playerImage = playerImage;}
     // }
 
+
+    @Override
+    public String toString() {
+        return super.toString() + " Player{" +
+                "health=" + health +
+                ", speedIndex=" + speedIndex +
+                '}';
+    }
 }
