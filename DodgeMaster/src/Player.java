@@ -15,6 +15,7 @@ public class Player extends Rectangle {
     private BufferedImage playerImage;  // Buffered image to it's sprites
     private Stack<Integer> xKeys = new Stack<>();   // A stack for each axis of movement
     private Stack<Integer> yKeys = new Stack<>();   // *Vertical keys stack
+    private boolean isMoving = false;
     private boolean isFacingLeft = false;
 
     // Constructor
@@ -105,20 +106,24 @@ public class Player extends Rectangle {
         int speedY = 0;
 
         if (!xKeys.isEmpty()) {
+            isMoving = true;
             int recentXKey = xKeys.peek();
             if (recentXKey == KeyEvent.VK_LEFT || recentXKey == KeyEvent.VK_A)
                 speedX = -speedIndex;
             else if (recentXKey == KeyEvent.VK_RIGHT || recentXKey == KeyEvent.VK_D)
                 speedX = speedIndex;
-        }
+        } else
+            stopMoving();
 
         if (!yKeys.isEmpty()) {
+            isMoving = true;
             int recentYKey = yKeys.peek();
             if (recentYKey == KeyEvent.VK_UP || recentYKey == KeyEvent.VK_W)
                 speedY = -speedIndex;
             else if (recentYKey == KeyEvent.VK_DOWN || recentYKey == KeyEvent.VK_S)
                 speedY = speedIndex;
-        }
+        } else
+            stopMoving();
 
         if (speedX < 0)
             isFacingLeft = true;
@@ -131,19 +136,19 @@ public class Player extends Rectangle {
     // }}
 
     // Getters and Setters
-    public int getHealth() {return health;}
-    public double getSpeedIndex() {return speedIndex;}
     public JPanel getPlayerPanel() {return playerPanel;}
-    public BufferedImage getPlayerImage() {return playerImage;}
-    public boolean isFacingLeft() {return isFacingLeft;}
+    public boolean isMoving() {return isMoving;}
 
-    public void setHealth(int health) {this.health = health;}
-    public void setSpeedIndex(int speedIndex) {this.speedIndex = speedIndex;}
-    public void setPlayerPanel(JPanel playerPanel) {this.playerPanel = playerPanel;}
-    public void setPlayerImage(BufferedImage playerImage) {this.playerImage = playerImage;}
-    public void setFacingLeft(boolean facingLeft) {isFacingLeft = facingLeft;}
+    public void stopMoving() {isMoving = false;}
+    public void setFrame(int frameNumber) {
+        try {
+            String imagePath = String.format("../assets/david_sprite_%02d.png", frameNumber);
+            playerImage = ImageIO.read(new File(imagePath));
+        } catch (IOException e) {e.printStackTrace();}
+        playerPanel.repaint();
+    }
+
     // }
-
 
     @Override
     public String toString() {
