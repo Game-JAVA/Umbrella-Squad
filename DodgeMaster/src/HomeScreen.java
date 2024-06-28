@@ -39,54 +39,66 @@ public class HomeScreen extends JFrame {
         panel.setOpaque(false); // Deixa o painel transparente para que o fundo com imagem seja visível
         panel.setLayout(new GridBagLayout());
 
-        // Cria o botão iniciar com a imagem
-        ImageIcon image = new ImageIcon("../assets/botao.png");
-        JButton iniciarButton = new JButton(image);
-        iniciarButton.setSize(new Dimension(4, 5));
-        iniciarButton.setToolTipText("Clique para iniciar o jogo");
+        // Carrega e redimensiona a imagem do botão
+        BufferedImage buttonImage = null;
+        try {
+            buttonImage = ImageIO.read(new File("../assets/bootao.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        iniciarButton.addActionListener(e -> abrirTelaJogo());
+        if (buttonImage != null) {
+            Image scaledImage = buttonImage.getScaledInstance(250, 70, Image.SCALE_SMOOTH); // Redimensiona a imagem
+            ImageIcon buttonImageIcon = new ImageIcon(scaledImage);
 
-        // Cria o JComboBox
-        nivelComboBox = new JComboBox<>(new String[]{"Fácil", "Médio", "Difícil"});
-        nivelComboBox.setPreferredSize(new Dimension(150, 30)); // Ajuste o tamanho preferido conforme necessário
-        nivelComboBox.setFont(new Font("segoe script", Font.BOLD, 15));
-        nivelComboBox.setBackground(Color.WHITE); // Cor de fundo
-        nivelComboBox.setForeground(Color.BLUE); // Cor do texto
-        nivelComboBox.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1)); // Borda preta
+            // Cria o botão iniciar com a imagem redimensionada
+            JButton iniciarButton = new JButton(buttonImageIcon);
+            iniciarButton.setToolTipText("Clique para iniciar o jogo");
+            iniciarButton.setOpaque(false); // Deixa o botão transparente
+            iniciarButton.setContentAreaFilled(false); // Remove a área de conteúdo preenchida
+            iniciarButton.setBorderPainted(false); // Remove a borda do botão
 
-        // Adiciona componentes ao painel
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(120, 40, 0, 40);
-        JLabel label = new JLabel("Selecione o nível:");
-        label.setForeground(Color.WHITE);
-        label.setFont(new Font("segoe script", Font.BOLD, 20));
-        panel.add(label);
+            iniciarButton.addActionListener(e -> abrirTelaJogo());
 
-        // Adiciona o label "Selecione o nível:"
-        gbc.gridy = 1;
-        panel.add(label, gbc);
+            // Cria o JComboBox
+            nivelComboBox = new JComboBox<>(new String[]{"Fácil", "Médio", "Difícil"});
+            nivelComboBox.setPreferredSize(new Dimension(150, 30)); // Ajuste o tamanho preferido conforme necessário
+            nivelComboBox.setFont(new Font("Arial", Font.BOLD, 22));
+            nivelComboBox.setBackground(Color.WHITE); // Cor de fundo
+            nivelComboBox.setForeground(Color.BLUE); // Cor do texto
+            nivelComboBox.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1)); // Borda preta
 
-        // Adiciona o JComboBox
-        gbc.gridy = 2;
-        gbc.insets = new Insets(0, 40, 10, 40);
-        panel.add(nivelComboBox, gbc);
+            // Adiciona componentes ao painel
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.insets = new Insets(140, 40, 20, 40);
+            JLabel label = new JLabel("Selecione o nível:");
+            label.setForeground(Color.YELLOW);
+            label.setFont(new Font("Arial", Font.BOLD, 40));
+            panel.add(label, gbc);
 
-        // Adiciona o botão "Iniciar"
-        gbc.gridy = 3;
-        panel.add(iniciarButton, gbc);
+            // Adiciona o JComboBox
+            gbc.gridy = 1;
+            gbc.insets = new Insets(0, 40, 30, 40);
+            panel.add(nivelComboBox, gbc);
 
-        // Adiciona o painel de controles ao painel de fundo
-        backgroundPanel.add(panel, BorderLayout.CENTER);
+            // Adiciona o botão "Iniciar"
+            gbc.gridy = 2;
+            panel.add(iniciarButton, gbc);
 
-        // Adiciona o painel de fundo ao JFrame
-        add(backgroundPanel);
+            // Adiciona o painel de controles ao painel de fundo
+            backgroundPanel.add(panel, BorderLayout.CENTER);
 
+            // Adiciona o painel de fundo ao JFrame
+            add(backgroundPanel);
+        } else {
+            System.err.println("Erro ao carregar a imagem do botão.");
+        }
     }
 
     private void abrirTelaJogo() {
+        nivelSelecionado = (String) nivelComboBox.getSelectedItem();
         Gameplay gameplay = new Gameplay(nivelSelecionado);
         gameplay.setVisible(true);
         dispose();
