@@ -5,8 +5,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Stack;
 
 public class Player extends Rectangle {
     // Attributes
@@ -14,7 +13,8 @@ public class Player extends Rectangle {
     private int speedIndex;
     private JPanel playerPanel;         // Turning the player in its own panel
     private BufferedImage playerImage;  // Buffered image to it's sprites
-    private Set<Integer> pressedKeys = new HashSet<>(); // Buffering inputs to smother movement
+    private Stack<Integer> xKeys = new Stack<>();   // A stack for each axis of movement
+    private Stack<Integer> yKeys = new Stack<>();   // *Vertical keys stack
 
     // Constructor
     public Player(int x, int y, int width, int height, int health, int speedIndex, String imagePath) {
@@ -22,7 +22,7 @@ public class Player extends Rectangle {
         this.health = health;
         this.speedIndex = speedIndex;
 
-        // Load player image
+        // Load player default image
         try { playerImage = ImageIO.read(new File(imagePath));
         } catch (IOException e) {e.printStackTrace();}
 
@@ -49,26 +49,69 @@ public class Player extends Rectangle {
     public void draw(Graphics g) {g.drawImage(playerImage, 0, 0, getWidth(), getHeight(), null);}
 
     // Movement Section {
-    // Recognize key press
+        // Recognize key press then add the key to its axis stack
     public void keyPressed(KeyEvent key) {
-        pressedKeys.add(key.getKeyCode());
+        switch (key.getKeyCode()) {
+            case KeyEvent.VK_A:
+            case KeyEvent.VK_D:
+            case KeyEvent.VK_LEFT:
+            case KeyEvent.VK_RIGHT:
+                if (!xKeys.contains(key.getKeyCode())) {
+                    xKeys.push(key.getKeyCode());
+                } break;
+            case KeyEvent.VK_W:
+            case KeyEvent.VK_S:
+            case KeyEvent.VK_UP:
+            case KeyEvent.VK_DOWN:
+                if (!yKeys.contains(key.getKeyCode())) {
+                    yKeys.push(key.getKeyCode());
+                } break;
+        }
         updateSpeed();
     }
 
-    // Recognize key release
+        // Recognize key release then remove the key from its axis stack
     public void keyRelease(KeyEvent key) {
-        pressedKeys.remove(key.getKeyCode());
+        switch (key.getKeyCode()) {
+            case KeyEvent.VK_A:
+            case KeyEvent.VK_D:
+            case KeyEvent.VK_LEFT:
+            case KeyEvent.VK_RIGHT:
+                xKeys.remove((Integer) key.getKeyCode());
+                break;
+            case KeyEvent.VK_W:
+            case KeyEvent.VK_S:
+            case KeyEvent.VK_UP:
+            case KeyEvent.VK_DOWN:
+                yKeys.remove((Integer) key.getKeyCode());
+                break;
+        }
         updateSpeed();
     }
 
+    /*   The most recent key pressed in an axis is meant to be prioritized, this function take the top one and sums to
+    * a local variable to manage which direction the player must be: if I press only right the var ends as '+5' for
+    * example, and then it's assigned to the player speed attribute
+    * */
     private void updateSpeed() {
         int speedX = 0;
         int speedY = 0;
 
-        if (pressedKeys.contains(KeyEvent.VK_UP) || pressedKeys.contains(KeyEvent.VK_W))       {speedY -= speedIndex;}
-        if (pressedKeys.contains(KeyEvent.VK_RIGHT) || pressedKeys.contains(KeyEvent.VK_D))    {speedX += speedIndex;}
-        if (pressedKeys.contains(KeyEvent.VK_DOWN) || pressedKeys.contains(KeyEvent.VK_S))     {speedY += speedIndex;}
-        if (pressedKeys.contains(KeyEvent.VK_LEFT) || pressedKeys.contains(KeyEvent.VK_A))     {speedX -= speedIndex;}
+        if (!xKeys.isEmpty()) {
+            int recentXKey = xKeys.peek();
+            if (recentXKey == KeyEvent.VK_LEFT || recentXKey == KeyEvent.VK_A)
+                speedX = -speedIndex;
+            else if (recentXKey == KeyEvent.VK_RIGHT || recentXKey == KeyEvent.VK_D)
+                speedX = speedIndex;
+        }
+
+        if (!yKeys.isEmpty()) {
+            int recentYKey = yKeys.peek();
+            if (recentYKey == KeyEvent.VK_UP || recentYKey == KeyEvent.VK_W)
+                speedY = -speedIndex;
+            else if (recentYKey == KeyEvent.VK_DOWN || recentYKey == KeyEvent.VK_S)
+                speedY = speedIndex;
+        }
 
         super.setSpeedX(speedX);
         super.setSpeedY(speedY);
