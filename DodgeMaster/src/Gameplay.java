@@ -31,7 +31,7 @@ public class Gameplay extends javax.swing.JFrame implements Runnable{
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(width, height));
-        player = new Player((getWidth()/2), (getHeight()/2), 80, 90, 100, 2, "../assets/david_sprite_01.png");
+        player = new Player((getWidth()/2), (getHeight()/2), 80, 90, 100, 4, "../assets/david_sprite_01.png");
         // Entities
         ImagePanel backgroundPanel = new ImagePanel("../assets/bg_city.png");
         backgroundPanel.add(player.getPlayerPanel());
@@ -45,7 +45,7 @@ public class Gameplay extends javax.swing.JFrame implements Runnable{
         while(true) {
             player.move(getWidth(), getHeight());
             // Buffer to handle the refresh rate
-            try {Thread.sleep(6);} catch (InterruptedException ex) {ex.printStackTrace();}
+            try {Thread.sleep(16);} catch (InterruptedException ex) {ex.printStackTrace();}
         }
     }
 }

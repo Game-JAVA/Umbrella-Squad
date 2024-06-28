@@ -15,6 +15,7 @@ public class Player extends Rectangle {
     private BufferedImage playerImage;  // Buffered image to it's sprites
     private Stack<Integer> xKeys = new Stack<>();   // A stack for each axis of movement
     private Stack<Integer> yKeys = new Stack<>();   // *Vertical keys stack
+    private boolean isFacingLeft = false;
 
     // Constructor
     public Player(int x, int y, int width, int height, int health, int speedIndex, String imagePath) {
@@ -46,7 +47,13 @@ public class Player extends Rectangle {
         playerPanel.setLocation(getX(), getY());
     }
 
-    public void draw(Graphics g) {g.drawImage(playerImage, 0, 0, getWidth(), getHeight(), null);}
+    public void draw(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g; // Handle mirroring the image by drawing it as a 2d graph
+        if (isFacingLeft)
+            g2d.drawImage(playerImage, getWidth(), 0, -getWidth(), getHeight(), null); // Draw mirrored image
+        else
+            g2d.drawImage(playerImage, 0, 0, getWidth(), getHeight(), null);
+    }
 
     // Movement Section {
         // Recognize key press then add the key to its axis stack
@@ -113,6 +120,11 @@ public class Player extends Rectangle {
                 speedY = speedIndex;
         }
 
+        if (speedX < 0)
+            isFacingLeft = true;
+        else if (speedX > 0)
+            isFacingLeft = false;
+
         super.setSpeedX(speedX);
         super.setSpeedY(speedY);
     }
@@ -123,11 +135,13 @@ public class Player extends Rectangle {
     public double getSpeedIndex() {return speedIndex;}
     public JPanel getPlayerPanel() {return playerPanel;}
     public BufferedImage getPlayerImage() {return playerImage;}
+    public boolean isFacingLeft() {return isFacingLeft;}
 
     public void setHealth(int health) {this.health = health;}
     public void setSpeedIndex(int speedIndex) {this.speedIndex = speedIndex;}
     public void setPlayerPanel(JPanel playerPanel) {this.playerPanel = playerPanel;}
     public void setPlayerImage(BufferedImage playerImage) {this.playerImage = playerImage;}
+    public void setFacingLeft(boolean facingLeft) {isFacingLeft = facingLeft;}
     // }
 
 
