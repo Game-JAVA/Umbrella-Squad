@@ -46,15 +46,15 @@ public class Gameplay extends javax.swing.JFrame implements Runnable{
     public void run() {
         while(true) {
             player.move(getWidth(), getHeight());
-            player.setFrame(frameIndex);
-            // Buffer to handle the refresh rate
-            try {Thread.sleep(17);} catch (InterruptedException ex) {ex.printStackTrace();}
             if (player.isMoving()) {
                 frameUpdate = (frameUpdate+1)%7;
                 if (frameUpdate == 6)
                     frameIndex = (frameIndex+1)%8;
             } else
-                player.setFrame(0);
+                frameIndex = 0;
+            player.setFrame(frameIndex);
+            // Buffer to handle the refresh rate
+            try {Thread.sleep(17);} catch (InterruptedException ex) {ex.printStackTrace();}
         }
     }
 }

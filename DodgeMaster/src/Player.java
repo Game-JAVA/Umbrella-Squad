@@ -112,8 +112,7 @@ public class Player extends Rectangle {
                 speedX = -speedIndex;
             else if (recentXKey == KeyEvent.VK_RIGHT || recentXKey == KeyEvent.VK_D)
                 speedX = speedIndex;
-        } else
-            stopMoving();
+        }
 
         if (!yKeys.isEmpty()) {
             isMoving = true;
@@ -122,7 +121,9 @@ public class Player extends Rectangle {
                 speedY = -speedIndex;
             else if (recentYKey == KeyEvent.VK_DOWN || recentYKey == KeyEvent.VK_S)
                 speedY = speedIndex;
-        } else
+        }
+
+        if (xKeys.isEmpty() && yKeys.isEmpty())
             stopMoving();
 
         if (speedX < 0)
