@@ -15,6 +15,7 @@ public class HomeScreen extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setExtendedState(JFrame.MAXIMIZED_BOTH); // Maximiza a janela
         setLayout(new BorderLayout());
+        setMinimumSize(new Dimension(1360, 768));
 
         // Cria um JPanel para atuar como o painel de fundo com imagem
         JPanel backgroundPanel = new JPanel() {
