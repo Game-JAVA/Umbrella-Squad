@@ -19,6 +19,13 @@ public class Rectangle extends Shape {
         this.height = height;
     }
 
+        // Player Constructor
+    public Rectangle(int x, int y) {
+        super(x, y);
+        this.width = 80;
+        this.height = 90;
+    }
+
         // Shield Constructor
     public Rectangle(int x, int y, int diameter) {
         super(x, y);

@@ -19,8 +19,8 @@ public class Player extends Rectangle {
     private boolean isFacingLeft = false;
 
     // Constructor
-    public Player(int x, int y, int width, int height, int health, int speedIndex, String imagePath) {
-        super(x, y, width, height);
+    public Player(int x, int y, int health, int speedIndex, String imagePath) {
+        super(x, y);
         this.health = health;
         this.speedIndex = speedIndex;
 
@@ -36,8 +36,8 @@ public class Player extends Rectangle {
                 draw(g);
             }
         };
+
         playerPanel.setOpaque(false);   // Handle transparency
-        playerPanel.setBounds(x, y, width, height);
     }
     // }
 
@@ -73,6 +73,17 @@ public class Player extends Rectangle {
             g2d.drawImage(playerImage, getWidth(), 0, -getWidth(), getHeight(), null); // Draw mirrored image
         else
             g2d.drawImage(playerImage, 0, 0, getWidth(), getHeight(), null);
+    }
+
+    // Keeping proportion of the player to the screen
+    public void updateSize(int newScreenWidth, int newScreenHeight) {
+        int playerWidth = (newScreenWidth*5)/100;
+        int playerHeight = (newScreenHeight*6)/100;
+        setWidth(playerWidth);
+        setHeight(playerHeight);
+        playerPanel.setBounds(playerPanel.getX(), playerPanel.getY(), playerWidth, playerHeight);
+        playerPanel.revalidate();
+        playerPanel.repaint();
     }
 
     // Movement Section {
@@ -153,7 +164,7 @@ public class Player extends Rectangle {
         super.setSpeedX(speedX);
         super.setSpeedY(speedY);
     }
-    // }}
+    // }
 
     // Getters and Setters
     public JPanel getPlayerPanel() {return playerPanel;}
