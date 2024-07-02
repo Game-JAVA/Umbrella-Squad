@@ -45,7 +45,26 @@ public class Player extends Rectangle {
     @Override
     public void move(int screenWidth, int screenHeight) {
         super.move(screenWidth, screenHeight);
-        playerPanel.setLocation(getX(), getY());
+
+        // Setting custom bounds to the player
+        // Changing a fix value to a formula, so then it keeps proportional to the panel size
+        if (super.getX() < (screenWidth*4)/100) {
+            super.setX((screenWidth*4)/100);
+            super.setSpeedX(0);
+        } else if (super.getX() + super.getWidth() > (screenWidth - (screenWidth*6)/100)) {
+            super.setX((screenWidth - (screenWidth*6)/100) - super.getWidth());
+            super.setSpeedX(0);
+        }
+
+        if (super.getY() < (screenHeight*2)/100) {
+            super.setY((screenHeight*2)/100);
+            super.setSpeedY(0);
+        } else if (super.getY() + super.getHeight() > (screenHeight - (screenHeight*9)/100)) {
+            super.setY((screenHeight - (screenHeight*9)/100) - super.getHeight());
+            super.setSpeedY(0);
+        }
+
+        playerPanel.setLocation(getX(),getY());
     }
 
     public void draw(Graphics g) {

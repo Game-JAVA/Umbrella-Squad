@@ -46,6 +46,7 @@ public class Gameplay extends javax.swing.JFrame implements Runnable{
     public void run() {
         while(true) {
             player.move(getWidth(), getHeight());
+            System.out.println(getWidth());
             if (player.isMoving()) {
                 frameUpdate = (frameUpdate+1)%7;
                 if (frameUpdate == 6)
