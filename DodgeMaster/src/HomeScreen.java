@@ -17,6 +17,7 @@ public class HomeScreen extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLayout(new BorderLayout());
+        setMinimumSize(new Dimension(1360, 768));
 
         // Create and configure the background panel
         JPanel backgroundPanel = new JPanel() {
