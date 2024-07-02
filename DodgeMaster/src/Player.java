@@ -11,12 +11,15 @@ public class Player extends Rectangle {
     // Attributes
     private int health;
     private int speedIndex;
-    private JPanel playerPanel;         // Turning the player in its own panel
-    private BufferedImage playerImage;  // Buffered image to it's sprites
+    private final JPanel playerPanel;           // Turning the player in its own panel
+    private BufferedImage playerImage;          // Buffered image to it's sprites
     private Stack<Integer> xKeys = new Stack<>();   // A stack for each axis of movement
     private Stack<Integer> yKeys = new Stack<>();   // *Vertical keys stack
     private boolean isMoving = false;
     private boolean isFacingLeft = false;
+    private int frameUpdate = 0;
+    private int frameIndex = 0;
+
 
     // Constructor
     public Player(int x, int y, int health, int speedIndex, String imagePath) {
@@ -36,7 +39,6 @@ public class Player extends Rectangle {
                 draw(g);
             }
         };
-
         playerPanel.setOpaque(false);   // Handle transparency
     }
     // }
@@ -45,6 +47,7 @@ public class Player extends Rectangle {
     @Override
     public void move(int screenWidth, int screenHeight) {
         super.move(screenWidth, screenHeight);
+        playerPanel.setLocation(getX(), getY());
 
         // Setting custom bounds to the player
         // Changing a fix value to a formula, so then it keeps proportional to the panel size
@@ -64,6 +67,14 @@ public class Player extends Rectangle {
             super.setSpeedY(0);
         }
 
+        // Player walking animation:
+        if (isMoving()) {
+            frameUpdate = (frameUpdate+1)%7;
+            if (frameUpdate == 6)
+                frameIndex = (frameIndex+1)%8;
+        } else
+            frameIndex = 0;
+        setFrame(frameIndex);
         playerPanel.setLocation(getX(),getY());
     }
 
@@ -78,7 +89,7 @@ public class Player extends Rectangle {
     // Keeping proportion of the player to the screen
     public void updateSize(int newScreenWidth, int newScreenHeight) {
         int playerWidth = (newScreenWidth*5)/100;
-        int playerHeight = (newScreenHeight*6)/100;
+        int playerHeight = (newScreenHeight*11)/100;
         setWidth(playerWidth);
         setHeight(playerHeight);
         playerPanel.setBounds(playerPanel.getX(), playerPanel.getY(), playerWidth, playerHeight);
@@ -87,7 +98,7 @@ public class Player extends Rectangle {
     }
 
     // Movement Section {
-        // Recognize key press then add the key to its axis stack
+    // Recognize key press then add the key to its axis stack
     public void keyPressed(KeyEvent key) {
         switch (key.getKeyCode()) {
             case KeyEvent.VK_A:
@@ -108,7 +119,7 @@ public class Player extends Rectangle {
         updateSpeed();
     }
 
-        // Recognize key release then remove the key from its axis stack
+    // Recognize key release then remove the key from its axis stack
     public void keyRelease(KeyEvent key) {
         switch (key.getKeyCode()) {
             case KeyEvent.VK_A:
@@ -128,12 +139,13 @@ public class Player extends Rectangle {
     }
 
     /* The most recent key pressed in an axis is meant to be prioritized, this function take the top one and sums to
-    * a local variable to manage which direction the player must be: if I press only right the var ends as '+5' for
-    * example, and then it's assigned to the player speed attribute.
-    * */
+     * a local variable to manage which direction the player must be: if I press only right the var ends as '+5' for
+     * example, and then it's assigned to the player speed attribute.
+     * */
     private void updateSpeed() {
         int speedX = 0;
         int speedY = 0;
+        isMoving = false; // Starts as false, then start moving if there is a input for it
 
         if (!xKeys.isEmpty()) {
             isMoving = true;
@@ -164,7 +176,7 @@ public class Player extends Rectangle {
         super.setSpeedX(speedX);
         super.setSpeedY(speedY);
     }
-    // }
+    // }}
 
     // Getters and Setters
     public JPanel getPlayerPanel() {return playerPanel;}

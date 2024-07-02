@@ -1,3 +1,6 @@
+import javax.swing.*;
+import java.awt.image.BufferedImage;
+
 public class Bullet extends Rectangle {
     // Attributes
     private int damage;
