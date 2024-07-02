@@ -44,7 +44,7 @@ public class HomeScreen extends JFrame {
         try {
             buttonImage = ImageIO.read(new File("../assets/bootao.png"));
         } catch (IOException e) {
-            e.pgit rintStackTrace();
+            e.printStackTrace();
         }
 
         if (buttonImage != null) {
