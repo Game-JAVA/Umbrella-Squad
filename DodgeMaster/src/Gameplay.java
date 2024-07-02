@@ -3,9 +3,8 @@ import java.awt.*;
 
 public class Gameplay extends javax.swing.JFrame implements Runnable{
     // Attributes {
-        // Frame size
-    private int width = 1360;
-    private int height = 768;
+    private final Image backgroundImage;
+        // Player attributes:
     private Player player;
     private int frameUpdate = 0;
     private int frameIndex = 0;
@@ -13,6 +12,9 @@ public class Gameplay extends javax.swing.JFrame implements Runnable{
 
     // Constructor
     public Gameplay(String dificult) {
+        // Load the background image
+        backgroundImage = new ImageIcon("../assets/bg_city.png").getImage();
+
         // Method to fetch initial setup
         initComponents();
 
@@ -32,12 +34,20 @@ public class Gameplay extends javax.swing.JFrame implements Runnable{
     private void initComponents() {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new Dimension(width, height));
+        setMinimumSize(new Dimension(1360, 768));
+
         player = new Player((getWidth()/2), (getHeight()/2), 80, 90, 100, 4, "../assets/david_sprite_00.png");
-        // Entities
-        ImagePanel backgroundPanel = new ImagePanel("../assets/bg_city.png");
+
+        JPanel backgroundPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);    // Draw the background image, adapting to the window width and height
+                g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+            }
+        };
+
         backgroundPanel.add(player.getPlayerPanel());
-        backgroundPanel.setLayout(null);  // Allows for absolute positioning
+        backgroundPanel.setLayout(null);    // Allows for absolute positioning
         setContentPane(backgroundPanel);
         pack();
     }
