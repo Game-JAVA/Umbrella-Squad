@@ -19,8 +19,8 @@ public class Player extends Rectangle {
     private boolean isFacingLeft = false;
 
     // Constructor
-    public Player(int x, int y, int width, int height, int health, int speedIndex, String imagePath) {
-        super(x, y, width, height);
+    public Player(int x, int y, int health, int speedIndex, String imagePath) {
+        super(x, y);
         this.health = health;
         this.speedIndex = speedIndex;
 
@@ -37,7 +37,6 @@ public class Player extends Rectangle {
             }
         };
         playerPanel.setOpaque(false);   // Handle transparency
-        playerPanel.setBounds(x, y, width, height);
     }
     // }
 
@@ -46,6 +45,26 @@ public class Player extends Rectangle {
     public void move(int screenWidth, int screenHeight) {
         super.move(screenWidth, screenHeight);
         playerPanel.setLocation(getX(), getY());
+
+        // Setting custom bounds to the player
+        // Changing a fix value to a formula, so then it keeps proportional to the panel size
+        if (super.getX() < (screenWidth*4)/100) {
+            super.setX((screenWidth*4)/100);
+            super.setSpeedX(0);
+        } else if (super.getX() + super.getWidth() > (screenWidth - (screenWidth*6)/100)) {
+            super.setX((screenWidth - (screenWidth*6)/100) - super.getWidth());
+            super.setSpeedX(0);
+        }
+
+        if (super.getY() < (screenHeight*2)/100) {
+            super.setY((screenHeight*2)/100);
+            super.setSpeedY(0);
+        } else if (super.getY() + super.getHeight() > (screenHeight - (screenHeight*9)/100)) {
+            super.setY((screenHeight - (screenHeight*9)/100) - super.getHeight());
+            super.setSpeedY(0);
+        }
+
+        playerPanel.setLocation(getX(),getY());
     }
 
     public void draw(Graphics g) {
@@ -54,6 +73,17 @@ public class Player extends Rectangle {
             g2d.drawImage(playerImage, getWidth(), 0, -getWidth(), getHeight(), null); // Draw mirrored image
         else
             g2d.drawImage(playerImage, 0, 0, getWidth(), getHeight(), null);
+    }
+
+        // Keeping proportion of the player to the screen
+    public void updateSize(int newScreenWidth, int newScreenHeight) {
+        int playerWidth = (newScreenWidth*5)/100;
+        int playerHeight = (newScreenHeight*6)/100;
+        setWidth(playerWidth);
+        setHeight(playerHeight);
+        playerPanel.setBounds(playerPanel.getX(), playerPanel.getY(), playerWidth, playerHeight);
+        playerPanel.revalidate();
+        playerPanel.repaint();
     }
 
     // Movement Section {
@@ -112,8 +142,7 @@ public class Player extends Rectangle {
                 speedX = -speedIndex;
             else if (recentXKey == KeyEvent.VK_RIGHT || recentXKey == KeyEvent.VK_D)
                 speedX = speedIndex;
-        } else
-            stopMoving();
+        }
 
         if (!yKeys.isEmpty()) {
             isMoving = true;
@@ -122,7 +151,9 @@ public class Player extends Rectangle {
                 speedY = -speedIndex;
             else if (recentYKey == KeyEvent.VK_DOWN || recentYKey == KeyEvent.VK_S)
                 speedY = speedIndex;
-        } else
+        }
+
+        if (xKeys.isEmpty() && yKeys.isEmpty())
             stopMoving();
 
         if (speedX < 0)

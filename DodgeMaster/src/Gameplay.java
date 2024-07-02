@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 public class Gameplay extends javax.swing.JFrame implements Runnable{
     // Attributes {
@@ -24,6 +26,11 @@ public class Gameplay extends javax.swing.JFrame implements Runnable{
             public void keyReleased(java.awt.event.KeyEvent evt) {player.keyRelease(evt);}
         });
 
+        // ComponentListener to handle window resizing
+        addComponentListener(new ComponentAdapter() {
+            public void componentResized(ComponentEvent e) {player.updateSize(getWidth(), getWidth());}
+        });
+
         setVisible(true);
         // Buffering
         createBufferStrategy(2);
@@ -36,7 +43,7 @@ public class Gameplay extends javax.swing.JFrame implements Runnable{
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(1360, 768));
 
-        player = new Player((getWidth()/2), (getHeight()/2), 80, 90, 100, 4, "../assets/david_sprite_00.png");
+        player = new Player((getWidth()/2), (getHeight()/2), 100, 4, "../assets/david_sprite_00.png");
 
         JPanel backgroundPanel = new JPanel() {
             @Override
@@ -56,15 +63,16 @@ public class Gameplay extends javax.swing.JFrame implements Runnable{
     public void run() {
         while(true) {
             player.move(getWidth(), getHeight());
-            player.setFrame(frameIndex);
-            // Buffer to handle the refresh rate
-            try {Thread.sleep(17);} catch (InterruptedException ex) {ex.printStackTrace();}
+            System.out.println(getWidth());
             if (player.isMoving()) {
                 frameUpdate = (frameUpdate+1)%7;
                 if (frameUpdate == 6)
                     frameIndex = (frameIndex+1)%8;
             } else
-                player.setFrame(0);
+                frameIndex = 0;
+            player.setFrame(frameIndex);
+            // Buffer to handle the refresh rate
+            try {Thread.sleep(17);} catch (InterruptedException ex) {ex.printStackTrace();}
         }
     }
 }
