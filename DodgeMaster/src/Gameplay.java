@@ -6,16 +6,13 @@ import java.awt.event.ComponentEvent;
 public class Gameplay extends javax.swing.JFrame implements Runnable{
     // Attributes {
     private final Image backgroundImage;
-        // Player attributes:
     private Player player;
-    private int frameUpdate = 0;
-    private int frameIndex = 0;
     // }
 
     // Constructor
-    public Gameplay(String dificult) {
+    public Gameplay(String dificulty) {
         // Load the background image
-        backgroundImage = new ImageIcon("../assets/bg_city.png").getImage();
+        backgroundImage = new ImageIcon("../assets/bg_gameplayCity.png").getImage();
 
         // Method to fetch initial setup
         initComponents();
@@ -27,12 +24,12 @@ public class Gameplay extends javax.swing.JFrame implements Runnable{
         });
 
         // ComponentListener to handle window resizing
-        addComponentListener(new ComponentAdapter() {
-            public void componentResized(ComponentEvent e) {player.updateSize(getWidth(), getWidth());}
+        addComponentListener(new ComponentAdapter() {   // Player is relative to the window and difficulty
+            public void componentResized(ComponentEvent e) {player.updateSize(getWidth(), getHeight());}
         });
 
         setVisible(true);
-        // Buffering
+        // Buffering:
         createBufferStrategy(2);
         Thread t = new Thread(this);
         t.start();
@@ -48,29 +45,22 @@ public class Gameplay extends javax.swing.JFrame implements Runnable{
         JPanel backgroundPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
-                super.paintComponent(g);    // Draw the background image, adapting to the window width and height
+                super.paintComponent(g);    // Draw the background image, stretching to the window width and height
                 g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
             }
         };
 
         backgroundPanel.add(player.getPlayerPanel());
-        backgroundPanel.setLayout(null);    // Allows for absolute positioning
+        backgroundPanel.setLayout(null);
         setContentPane(backgroundPanel);
-        pack();
+        pack(); // Auto layout management
     }
 
     // Game loop
     public void run() {
         while(true) {
             player.move(getWidth(), getHeight());
-            System.out.println(getWidth());
-            if (player.isMoving()) {
-                frameUpdate = (frameUpdate+1)%7;
-                if (frameUpdate == 6)
-                    frameIndex = (frameIndex+1)%8;
-            } else
-                frameIndex = 0;
-            player.setFrame(frameIndex);
+
             // Buffer to handle the refresh rate
             try {Thread.sleep(17);} catch (InterruptedException ex) {ex.printStackTrace();}
         }
