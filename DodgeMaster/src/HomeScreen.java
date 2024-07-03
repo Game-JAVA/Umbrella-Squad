@@ -23,6 +23,7 @@ public class HomeScreen extends JFrame {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
+
                 // Carrega o GIF como um ImageIcon
                 ImageIcon gifIcon = new ImageIcon("../assets/dodge.gif");
                 Image gifImage = gifIcon.getImage();
