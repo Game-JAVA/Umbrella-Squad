@@ -5,7 +5,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+
 public class HomeScreen extends JFrame {
+
 
     private JComboBox<String> nivelComboBox;
     private String nivelSelecionado = "Fácil";
@@ -16,18 +18,16 @@ public class HomeScreen extends JFrame {
         setExtendedState(JFrame.MAXIMIZED_BOTH); // Maximiza a janela
         setLayout(new BorderLayout());
 
-        // Cria um JPanel para atuar como o painel de fundo com imagem
+        // Cria um JPanel para atuar como o painel de fundo com GIF
         JPanel backgroundPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                // Desenha a imagem de fundo
-                try {
-                    BufferedImage backgroundImage = ImageIO.read(new File("../assets/city.png"));
-                    g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+
+                // Carrega o GIF como um ImageIcon
+                ImageIcon gifIcon = new ImageIcon("../assets/dodge.gif");
+                Image gifImage = gifIcon.getImage();
+                g.drawImage(gifImage, 0, 0, getWidth(), getHeight(), this);
             }
         };
 
@@ -36,13 +36,13 @@ public class HomeScreen extends JFrame {
 
         // Cria o painel para os controles
         JPanel panel = new JPanel();
-        panel.setOpaque(false); // Deixa o painel transparente para que o fundo com imagem seja visível
+        panel.setOpaque(false); // Deixa o painel transparente para que o fundo com GIF seja visível
         panel.setLayout(new GridBagLayout());
 
         // Carrega e redimensiona a imagem do botão
         BufferedImage buttonImage = null;
         try {
-            buttonImage = ImageIO.read(new File("../assets/bootao.png"));
+            buttonImage = ImageIO.read(new File("../assets/botao.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
