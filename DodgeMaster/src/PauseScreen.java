@@ -8,8 +8,10 @@ import java.io.IOException;
 public class PauseScreen extends JFrame {
 
     private BufferedImage pauseImage;
+    private Gameplay gameplay;
 
-    public PauseScreen() {
+    public PauseScreen(Gameplay gameplay) {
+        this.gameplay = gameplay;
         try {
             pauseImage = ImageIO.read(new File("../assets/PauseScreen.jpeg"));
         } catch (IOException e) {
@@ -18,7 +20,7 @@ public class PauseScreen extends JFrame {
         }
 
         setTitle("Pause Screen");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Fecha apenas a janela de pausa
         setSize(800, 600);
         setMinimumSize(new Dimension(1360, 768));  // Tamanho mínimo da janela
         setLocationRelativeTo(null);
@@ -27,6 +29,18 @@ public class PauseScreen extends JFrame {
         setLayout(new BorderLayout());
         JPanel imagePanel = new ImagePanel();
         add(imagePanel, BorderLayout.CENTER);
+
+        // Add key listener to close pause screen on 'P' press
+        addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_P) {
+                    gameplay.togglePause();
+                    gameplay.requestFocus(); // Retorna o foco para o Gameplay antes de fechar
+                    dispose();
+                }
+            }
+        });
 
         setVisible(true);
     }
@@ -41,9 +55,5 @@ public class PauseScreen extends JFrame {
             Image scaledImage = pauseImage.getScaledInstance(panelWidth, panelHeight, Image.SCALE_SMOOTH);
             g.drawImage(scaledImage, 0, 0, panelWidth, panelHeight, null);
         }
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new PauseScreen());
     }
 }
