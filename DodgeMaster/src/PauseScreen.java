@@ -30,6 +30,14 @@ public class PauseScreen extends JFrame {
         JPanel imagePanel = new ImagePanel();
         add(imagePanel, BorderLayout.CENTER);
 
+        // Adiciona um listener para foco na janela
+        addWindowFocusListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowGainedFocus(java.awt.event.WindowEvent e) {
+                requestFocusInWindow();
+            }
+        });
+
         // Add key listener to close pause screen on 'P' press
         addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
