@@ -6,10 +6,14 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class Gameplay extends JFrame implements Runnable {
+    // Atributes
+    private static final int SHIELD_DURATION = 5000;
     private final Image backgroundImage;
     private Player player;
     private boolean isPaused;
     private JPanel pausePanel;
+    private Shield shield;
+    private Timer shieldTimer;
 
     public Gameplay(String difficulty) {
         // Load the background image
@@ -54,6 +58,7 @@ public class Gameplay extends JFrame implements Runnable {
         setMinimumSize(new Dimension(1360, 768));
 
         player = new Player((getWidth() / 2), (getHeight() / 2), 100, 4, "../assets/david_sprite_00.png");
+        shield = new Shield(100, 100, 50); // Initial position and diameter
 
         JPanel backgroundPanel = new JPanel() {
             @Override
@@ -65,6 +70,7 @@ public class Gameplay extends JFrame implements Runnable {
         };
 
         backgroundPanel.add(player.getPlayerPanel());
+        backgroundPanel.add(shield.getShieldPanel());
         backgroundPanel.setLayout(null);
         setContentPane(backgroundPanel);
         pack(); // Auto layout management
@@ -93,6 +99,33 @@ public class Gameplay extends JFrame implements Runnable {
         }
     }
 
+    public void activateShield() {
+        player.activateShield();
+        if (shieldTimer != null) {
+            shieldTimer.stop();
+        }
+        shieldTimer = new Timer(SHIELD_DURATION, e -> deactivateShield());
+        shieldTimer.setRepeats(false);
+        shieldTimer.start();
+    }
+
+    public void deactivateShield() {
+        player.deactivateShield();
+        shield.setActive(false);
+        shield.setVisible(true);
+        // Código para reposicionar o escudo ou torná-lo visível novamente
+        repositionShield();
+    }
+
+    private void repositionShield() {
+        // Reposicione o escudo para uma nova posição aleatória
+        int newX = (int) (Math.random() * (getWidth() - shield.getWidth()));
+        int newY = (int) (Math.random() * (getHeight() - shield.getHeight()));
+        shield.setX(newX);
+        shield.setY(newY);
+        shield.getShieldPanel().setBounds(newX, newY, shield.getWidth(), shield.getHeight());
+    }
+
     // Game loop
     public void run() {
         while (true) {
@@ -105,6 +138,16 @@ public class Gameplay extends JFrame implements Runnable {
                 } catch (InterruptedException ex) {
                     ex.printStackTrace();
                 }
+
+                if (player.getBounds().intersects(shield.getBounds()) && shield.isActive()) {
+                    activateShield();
+                    shield.setActive(false);
+                    shield.setVisible(false);
+                    shieldTimer = new Timer(SHIELD_DURATION, e -> deactivateShield());
+                    shieldTimer.setRepeats(false);
+                    shieldTimer.start();
+                }
+
             } else {
                 // Pause logic
                 try {
@@ -114,9 +157,5 @@ public class Gameplay extends JFrame implements Runnable {
                 }
             }
         }
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new Gameplay("Fácil"));
     }
 }
