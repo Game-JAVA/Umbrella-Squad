@@ -1,28 +1,44 @@
-public class Shield extends Rectangle {
-    // Attributes
-    private int diameter;
-    private int durability;
+import javax.swing.*;
+import java.awt.*;
 
-    // Constructor
-    public Shield(int x, int y, int diameter, int durability) {
+public class Shield extends Rectangle {
+    private boolean active;
+    private JPanel shieldPanel;
+
+    public Shield(int x, int y, int diameter) {
         super(x, y, diameter);
-        this.diameter = diameter;
-        this.durability = durability;
+        this.active = true;
+
+        shieldPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                draw(g);
+            }
+        };
+        shieldPanel.setOpaque(false); // Handle transparency
+        shieldPanel.setBounds(x, y, diameter, diameter);
     }
 
-    // Methods
-    // Getters and Setters
-    public int getDiameter() {return diameter;}
-    public void setDiameter(int diameter) {this.diameter = diameter;}
-    public int getDurability() {return durability;}
-    public void setDurability(int durability) {this.durability = durability;}
+    public boolean isActive() {
+        return active;
+    }
 
-    // toString
-    @Override
-    public String toString() {
-        return super.toString() + "Shield{" +
-                "diameter=" + diameter +
-                ", durability=" + durability +
-                '}';
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public JPanel getShieldPanel() {
+        return shieldPanel;
+    }
+
+    public void setVisible(boolean visible) {
+        shieldPanel.setVisible(visible);
+    }
+
+    public void draw(Graphics g) {
+        // Desenhe o escudo aqui
+        g.setColor(Color.BLUE);
+        g.fillOval(0, 0, getWidth(), getHeight());
     }
 }
