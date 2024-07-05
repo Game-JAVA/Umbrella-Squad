@@ -4,19 +4,24 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 
 public class HomeScreen extends JFrame {
 
-
     private JComboBox<String> nivelComboBox;
     private String nivelSelecionado = "Fácil";
+    private Clip clip; // Variável para armazenar o áudio
 
     public HomeScreen() {
         setTitle("Menu Principal");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setExtendedState(JFrame.MAXIMIZED_BOTH); // Maximiza a janela
         setLayout(new BorderLayout());
+
+        // song play
+        tocarMusica("../assets/musica.wav");
 
         // Cria um JPanel para atuar como o painel de fundo com GIF
         JPanel backgroundPanel = new JPanel() {
@@ -74,7 +79,7 @@ public class HomeScreen extends JFrame {
             gbc.gridy = 0;
             gbc.insets = new Insets(140, 40, 20, 40);
             JLabel label = new JLabel("Selecione o nível:");
-            label.setForeground(Color.YELLOW);
+            label.setForeground(Color.WHITE);
             label.setFont(new Font("Arial", Font.BOLD, 40));
             panel.add(label, gbc);
 
@@ -97,10 +102,23 @@ public class HomeScreen extends JFrame {
         }
     }
 
+    private void tocarMusica(String caminhoArquivo) {
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(caminhoArquivo).getAbsoluteFile());
+            clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.start();
+            clip.loop(Clip.LOOP_CONTINUOUSLY); // Faz a música tocar em loop
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void abrirTelaJogo() {
         nivelSelecionado = (String) nivelComboBox.getSelectedItem();
         Gameplay gameplay = new Gameplay(nivelSelecionado);
         gameplay.setVisible(true);
+        clip.stop(); // Para a música quando a tela do jogo é aberta
         dispose();
     }
 

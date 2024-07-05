@@ -1,9 +1,13 @@
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
 
 public class Gameplay extends JFrame implements Runnable {
     // Atributes
@@ -14,6 +18,7 @@ public class Gameplay extends JFrame implements Runnable {
     private JPanel pausePanel;
     private Shield shield;
     private Timer shieldTimer;
+    private Clip clip;
 
     public Gameplay(String difficulty) {
         // Load the background image
@@ -21,6 +26,9 @@ public class Gameplay extends JFrame implements Runnable {
 
         // Initialize components
         initComponents();
+
+        // song play
+        tocarMusica("../assets/som_cidade.wav");
 
         // Keyboard listener for player actions and pause
         addKeyListener(new KeyAdapter() {
@@ -91,9 +99,26 @@ public class Gameplay extends JFrame implements Runnable {
         backgroundPanel.add(pausePanel);
     }
 
+    private void tocarMusica(String caminhoArquivo) {
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(caminhoArquivo).getAbsoluteFile());
+            clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.start();
+            clip.loop(Clip.LOOP_CONTINUOUSLY); // Faz a música tocar em loop
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void togglePause() {
         isPaused = !isPaused;
         pausePanel.setVisible(isPaused);
+        if (isPaused) {
+            clip.stop(); // Para a música quando o jogo é pausado
+        } else {
+            clip.start(); // Retoma a música quando o jogo é retomado
+        }
         if (isPaused) {
             requestFocus(); // Ensure the gameplay window retains focus
         }
