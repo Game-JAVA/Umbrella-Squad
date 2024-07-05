@@ -4,20 +4,32 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Gameplay extends JFrame implements Runnable {
-    // Atributes
-    private static final int SHIELD_DURATION = 5000;
+    // Attributes
+        // Screens
     private final Image backgroundImage;
+    private final Image pauseImage;
+    private JPanel backgroundPanel;
+        // Entities
     private Player player;
+    private List<Bullet> bullets;
+    private List<Shield> shields;
+        //
+    private double currentTime;
     private boolean isPaused;
-    private JPanel pausePanel;
-    private Shield shield;
-    private Timer shieldTimer;
 
+    // Constructor
     public Gameplay(String difficulty) {
-        // Load the background image
+        // Load images
         backgroundImage = new ImageIcon("../assets/bg_gameplayCity.png").getImage();
+        pauseImage = new ImageIcon("../assets/bg_pauseScreen.png").getImage();
+
+        // Initialize lists
+        bullets = new ArrayList<>();
+        shields = new ArrayList<>();
 
         // Initialize components
         initComponents();
@@ -25,23 +37,19 @@ public class Gameplay extends JFrame implements Runnable {
         // Keyboard listener for player actions and pause
         addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent evt) {
-                if (evt.getKeyCode() == KeyEvent.VK_P) {
+                if (evt.getKeyCode() == KeyEvent.VK_P || evt.getKeyCode() == KeyEvent.VK_ESCAPE)
                     togglePause();
-                } else {
+                else
                     player.keyPressed(evt);
-                }
             }
 
-            public void keyReleased(KeyEvent evt) {
-                player.keyRelease(evt);
-            }
+            public void keyReleased(KeyEvent evt) {player.keyRelease(evt);}
         });
 
         // ComponentListener to handle window resizing
         addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent e) {
                 player.updateSize(getWidth(), getHeight());
-                pausePanel.setBounds(0, 0, getWidth(), getHeight()); // Adjust pausePanel bounds on resize
             }
         });
 
@@ -58,47 +66,64 @@ public class Gameplay extends JFrame implements Runnable {
         setMinimumSize(new Dimension(1360, 768));
 
         player = new Player((getWidth() / 2), (getHeight() / 2), 100, 4, "../assets/david_sprite_00.png");
-        shield = new Shield(100, 100, 50); // Initial position and diameter
 
-        JPanel backgroundPanel = new JPanel() {
+        // Gameplay screen initiation and configuration
+        backgroundPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                // Draw the background image, stretching to the window width and height
                 g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+                if (isPaused)
+                    g.drawImage(pauseImage, 0, 0, getWidth(), getHeight(), this);
             }
         };
 
-        backgroundPanel.add(player.getPlayerPanel());
-        backgroundPanel.add(shield.getShieldPanel());
         backgroundPanel.setLayout(null);
+        backgroundPanel.add(player.getPlayerPanel());
         setContentPane(backgroundPanel);
-        pack(); // Auto layout management
-
-        // Create the pause panel
-        pausePanel = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                // Draw the pause image, stretching to the window width and height
-                Image pauseImage = new ImageIcon("../assets/PauseScreen.JPEG").getImage();
-                g.drawImage(pauseImage, 0, 0, getWidth(), getHeight(), this);
-            }
-        };
-        pausePanel.setOpaque(false);
-        pausePanel.setVisible(false); // Initially invisible
-        pausePanel.setBounds(0, 0, getWidth(), getHeight());
-        backgroundPanel.add(pausePanel);
+        pack(); // Auto layout management in case something is missing
     }
 
-    public void togglePause() {
-        isPaused = !isPaused;
-        pausePanel.setVisible(isPaused);
-        if (isPaused) {
-            requestFocus(); // Ensure the gameplay window retains focus
+    // Game loop
+    public void run() {
+        // Polymorphic entities
+        Bullet bullet = new Bullet(100,100,70,40,1,"../assets/laser_sprite_00.png");
+        Shield shield = new Shield(100, 100, 50);
+
+        while (true) {
+            if (!isPaused) {
+                currentTime += .017;
+
+                /* Bullet logic:
+                if (((int) Math.floor(currentTime)) % 2 == 0) {
+                    bullets.add(bullet);
+                    bullet.spawnGen(player.getX(), player.getY(), player.getWidth(), player.getHeight(), getWidth(), getHeight());
+                    backgroundPanel.add(bullet.getBulletPanel());
+                    backgroundPanel.repaint();
+                }
+
+                for (Bullet i : bullets) {
+                    i.move(getWidth(), getHeight());
+                    i.hasHit(player.getX(), player.getY(), player.getWidth(), player.getHeight());
+                }
+                 */
+
+                player.move(getWidth(), getHeight());
+            }
+            // Buffer to handle the refresh rate
+            try { Thread.sleep(17);
+            } catch (InterruptedException ex) {ex.printStackTrace();}
         }
     }
 
+    // Other Functions:
+    public void togglePause() {
+        isPaused = !isPaused;
+        revalidate();
+        backgroundPanel.repaint();
+    }
+
+    /*
     public void activateShield() {
         player.activateShield();
         if (shieldTimer != null) {
@@ -125,37 +150,5 @@ public class Gameplay extends JFrame implements Runnable {
         shield.setY(newY);
         shield.getShieldPanel().setBounds(newX, newY, shield.getWidth(), shield.getHeight());
     }
-
-    // Game loop
-    public void run() {
-        while (true) {
-            if (!isPaused) {
-                player.move(getWidth(), getHeight());
-
-                // Buffer to handle the refresh rate
-                try {
-                    Thread.sleep(17);
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
-                }
-
-                if (player.getBounds().intersects(shield.getBounds()) && shield.isActive()) {
-                    activateShield();
-                    shield.setActive(false);
-                    shield.setVisible(false);
-                    shieldTimer = new Timer(SHIELD_DURATION, e -> deactivateShield());
-                    shieldTimer.setRepeats(false);
-                    shieldTimer.start();
-                }
-
-            } else {
-                // Pause logic
-                try {
-                    Thread.sleep(100); // Reduce CPU usage while paused
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }
-    }
+    */
 }

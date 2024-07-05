@@ -7,8 +7,6 @@ import java.io.IOException;
 
 
 public class HomeScreen extends JFrame {
-
-
     private JComboBox<String> nivelComboBox;
     private String nivelSelecionado = "Fácil";
 

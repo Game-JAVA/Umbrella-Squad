@@ -10,18 +10,19 @@ import java.util.Stack;
 public class Player extends Rectangle {
     // Attributes
     private int health;
-    private int speedIndex;
+    private final int speedIndex;
+        // Structuring and movement variables:
     private final JPanel playerPanel;           // Turning the player in its own panel
     private BufferedImage playerImage;          // Buffered image to it's sprites
-    private Stack<Integer> xKeys = new Stack<>();   // A stack for each axis of movement
-    private Stack<Integer> yKeys = new Stack<>();   // *Vertical keys stack
+    private final Stack<Integer> xKeys = new Stack<>();   // A stack for each axis of movement
+    private final Stack<Integer> yKeys = new Stack<>();   // *Vertical keys stack
     private boolean isMoving = false;
     private boolean isFacingLeft = false;
+        // Animation handling variables:
     private int frameUpdate = 0;
     private int frameIndex = 0;
-    private static final int SHIELD_DURATION = 5000;
-    private boolean shielded;
-    private long shieldStartTime;
+        // Shield parameters:
+    private boolean haveShield;
 
 
     // Constructor
@@ -148,7 +149,7 @@ public class Player extends Rectangle {
     private void updateSpeed() {
         int speedX = 0;
         int speedY = 0;
-        isMoving = false; // Starts as false, then start moving if there is a input for it
+        isMoving = false; // Starts as false, then start moving if there is an input for it
 
         if (!xKeys.isEmpty()) {
             isMoving = true;
@@ -180,31 +181,13 @@ public class Player extends Rectangle {
         super.setSpeedY(speedY);
     }
 
-    public void activateShield() {
-        shielded = true;
-        shieldStartTime = System.currentTimeMillis();
-    }
-
-    public void deactivateShield() {
-        shielded = false;
-    }
-
-    public void updateShieldStatus() {
-        if (shielded && System.currentTimeMillis() - shieldStartTime >= SHIELD_DURATION) {
-            deactivateShield(); // Desativa o escudo após SHIELD_DURATION milissegundos
-        }
-    }
-
-    public Rectangle getBounds() {
-        return new Rectangle(getX(), getY(), getWidth(), getHeight());
-    }
-
-
-    // Getters and Setters
+    // Getters and Setters:
     public JPanel getPlayerPanel() {return playerPanel;}
     public boolean isMoving() {return isMoving;}
+    public boolean HaveShield() {return haveShield;}
 
     public void stopMoving() {isMoving = false;}
+    public void removeShield() {haveShield = false;}
     public void setFrame(int frameNumber) {
         try {
             String imagePath = String.format("../assets/david_sprite_%02d.png", frameNumber);
