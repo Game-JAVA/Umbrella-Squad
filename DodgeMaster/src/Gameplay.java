@@ -143,12 +143,13 @@ public class Gameplay extends JFrame implements Runnable {
     }
 
     private void repositionShield() {
-        // Reposicione o escudo para uma nova posição aleatória
         int newX = (int) (Math.random() * (getWidth() - shield.getWidth()));
         int newY = (int) (Math.random() * (getHeight() - shield.getHeight()));
         shield.setX(newX);
         shield.setY(newY);
         shield.getShieldPanel().setBounds(newX, newY, shield.getWidth(), shield.getHeight());
+        shield.setActive(true); // Garante que o escudo seja ativado
+        shield.setVisible(true); // Garante que o escudo seja visível
     }
 
     // Game loop
@@ -157,7 +158,6 @@ public class Gameplay extends JFrame implements Runnable {
             if (!isPaused) {
                 player.move(getWidth(), getHeight());
 
-                // Buffer to handle the refresh rate
                 try {
                     Thread.sleep(17);
                 } catch (InterruptedException ex) {
@@ -168,15 +168,11 @@ public class Gameplay extends JFrame implements Runnable {
                     activateShield();
                     shield.setActive(false);
                     shield.setVisible(false);
-                    shieldTimer = new Timer(SHIELD_DURATION, e -> deactivateShield());
-                    shieldTimer.setRepeats(false);
-                    shieldTimer.start();
                 }
 
             } else {
-                // Pause logic
                 try {
-                    Thread.sleep(100); // Reduce CPU usage while paused
+                    Thread.sleep(100);
                 } catch (InterruptedException ex) {
                     ex.printStackTrace();
                 }
