@@ -98,7 +98,7 @@ public class Gameplay extends JFrame implements Runnable {
         pausePanel.setBounds(0, 0, getWidth(), getHeight());
         backgroundPanel.add(pausePanel);
 
-        shieldInitTimer = new Timer(20000, e -> initializeShield());
+        shieldInitTimer = new Timer(5000, e -> initializeShield());
         shieldInitTimer.setRepeats(false);
         shieldInitTimer.start();
     }
@@ -153,14 +153,21 @@ public class Gameplay extends JFrame implements Runnable {
     }
 
     private void repositionShield() {
-        int newX = (int) (Math.random() * (getWidth() - shield.getWidth()));
-        int newY = (int) (Math.random() * (getHeight() - shield.getHeight()));
+        int leftLimit = (getWidth() * 4) / 100;
+        int rightLimit = getWidth() - (getWidth() * 6) / 100 - shield.getWidth();
+        int topLimit = (getHeight() * 2) / 100;
+        int bottomLimit = getHeight() - (getHeight() * 9) / 100 - shield.getHeight();
+
+        int newX = leftLimit + (int) (Math.random() * (rightLimit - leftLimit));
+        int newY = topLimit + (int) (Math.random() * (bottomLimit - topLimit));
+
         shield.setX(newX);
         shield.setY(newY);
         shield.getShieldPanel().setBounds(newX, newY, shield.getWidth(), shield.getHeight());
         shield.setActive(true); // Garante que o escudo seja ativado
         shield.setVisible(true); // Garante que o escudo seja visível
     }
+
 
     // Game loop
     public void run() {
