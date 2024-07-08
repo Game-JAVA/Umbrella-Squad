@@ -98,17 +98,31 @@ public class Gameplay extends JFrame implements Runnable {
         pausePanel.setBounds(0, 0, getWidth(), getHeight());
         backgroundPanel.add(pausePanel);
 
-        shieldInitTimer = new Timer(5000, e -> initializeShield());
+        shieldInitTimer = new Timer(20000, e -> initializeShield());
         shieldInitTimer.setRepeats(false);
-        shieldInitTimer.start();
+
+        // Verifica se o timer está rodando antes de iniciar
+        if (!shieldInitTimer.isRunning()) {
+            shieldInitTimer.start();
+        }
     }
 
     private void initializeShield() {
-        shield = new Shield(100, 100, 50); // Posicionamento inicial do escudo
-        backgroundPanel.add(shield.getShieldPanel());
-        shield.getShieldPanel().setBounds(shield.getX(), shield.getY(), shield.getWidth(), shield.getHeight());
-        backgroundPanel.repaint();
+            int leftLimit = (getWidth() * 4) / 100;
+            int rightLimit = getWidth() - (getWidth() * 6) / 100 - player.getWidth();
+            int topLimit = (getHeight() * 2) / 100;
+            int bottomLimit = getHeight() - (getHeight() * 9) / 100 - player.getHeight();
+
+            int initialX = leftLimit + (int) (Math.random() * (rightLimit - leftLimit));
+            int initialY = topLimit + (int) (Math.random() * (bottomLimit - topLimit));
+
+            shield = new Shield(initialX, initialY, 50); // Posicionamento inicial do escudo com coordenadas aleatórias
+            backgroundPanel.add(shield.getShieldPanel());
+            shield.getShieldPanel().setBounds(initialX, initialY, shield.getWidth(), shield.getHeight());
+            backgroundPanel.repaint();
     }
+
+
 
     private void tocarMusica(String caminhoArquivo) {
         try {
