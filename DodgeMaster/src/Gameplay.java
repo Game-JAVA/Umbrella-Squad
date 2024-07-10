@@ -82,7 +82,8 @@ public class Gameplay extends JFrame implements Runnable {
         pausePanel.setOpaque(false);
         pausePanel.setVisible(false); // Initially invisible
         pausePanel.setBounds(0, 0, getWidth(), getHeight());
-        backgroundPanel.add(pausePanel);
+        add(pausePanel); // Add pausePanel to the JFrame directly
+        setComponentZOrder(pausePanel, 0); // Ensure pausePanel is always on top
     }
 
     public void togglePause() {
@@ -114,9 +115,5 @@ public class Gameplay extends JFrame implements Runnable {
                 }
             }
         }
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new Gameplay("Fácil"));
     }
 }
