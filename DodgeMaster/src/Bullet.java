@@ -34,9 +34,16 @@ public class Bullet extends Rectangle {
     }
 
     // Methods:
+    @Override
     public void move(int screenWidth, int screenHeight) {
-        super.move(screenWidth, screenHeight);
+        setX(getX()+getSpeedX());
+        setY(getY()+getSpeedY());
         bulletPanel.setLocation(getX(), getY());
+    }
+
+    public boolean isOutOfBounds(int screenWidth, int screenHeight) {
+        return getX() < (-getWidth()*2) || getX() > (screenWidth+getWidth()*2)
+                || getY() < (-getHeight()*2) || getY() > (screenHeight+getHeight()*2);
     }
 
     public void spawnGen(int playerX, int playerY, int playerW, int playerH, int screenW, int screenH) {
@@ -54,8 +61,8 @@ public class Bullet extends Rectangle {
          * the player that is them generating in a certain range of your current location, these chances may differ
          * when balancing the game
          */
-        if (r.nextInt(10)+1 <= 7) {
-            switch (getSpawnSide()) {
+        if (r.nextInt(10)+1 <= 5) {
+            switch (getSpawnSide()) { // Targeting the player
                 case 1: // Spawns at North
                     setY(-getHeight());
                     setX(r.nextInt(verticalMax-verticalMin+1)+verticalMin);
@@ -70,11 +77,11 @@ public class Bullet extends Rectangle {
                     break;
                 case 4: // Spawns at West
                     setX(-getWidth());
-                    setX(r.nextInt(verticalMax-verticalMin+1)+verticalMin);
+                    setY(r.nextInt(horizontalMax-horizontalMin+1)+horizontalMin);
                     break;
             }
         } else {
-            switch (getSpawnSide()) {
+            switch (getSpawnSide()) { // Full side spawn
                 case 1: // Spawns at North
                     setY(-getHeight());
                     setX(r.nextInt(screenW-getWidth()));
@@ -93,22 +100,44 @@ public class Bullet extends Rectangle {
                     break;
             }
         }
+
+        // Setting speed values
+        switch (getSpawnSide()) {
+            case 1: // Spawns at North
+                setSpeedX(0);
+                setSpeedY(4);
+                break;
+            case 2: // Spawns at East
+                setSpeedX(-4);
+                setSpeedY(0);
+                break;
+            case 3: // Spawns at South
+                setSpeedX(0);
+                setSpeedY(-4);
+                break;
+            case 4: // Spawns at West
+                setSpeedX(4);
+                setSpeedY(0);
+                break;
+        }
     }
 
     // Checks player coordinates and if the bullet is anywhere inside it's bounds
     public boolean hasHit(int playerX, int playerY, int playerWidth, int playerHeight) {
-        return playerX > getX() && (playerX + playerWidth) < getX()
-                && playerY > getY() && (playerY + playerHeight) < getY();
+        int bulletRight = getX() + getWidth();
+        int bulletBottom = getY() + getHeight();
+        int playerRight = playerX + playerWidth;
+        int playerBottom = playerY + playerHeight;
+
+        return getX() < playerRight && bulletRight > playerX && getY() < playerBottom && bulletBottom > playerY;
     }
 
     public void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D) g; // Handle rotation of the image by drawing it as a 2d graph
 
         if (isVertical) {
-            g2d.rotate(Math.PI/2,getWidth()/2,getHeight()/2); // Rotates 90º clockwise
-            g2d.drawImage(bulletImage, (getHeight()-getWidth())/2, (getWidth()-getHeight())/2, getWidth(),
-                    getHeight(), null);
-            g2d.rotate(-Math.PI/2,getWidth()/2,getHeight()/2);
+            g2d.rotate(Math.PI/2, (double) getWidth() /2, (double) getHeight() /2); // Rotates 90º clockwise
+            g2d.drawImage(bulletImage, 0, 0, getWidth(), getHeight(), null);
         } else g.drawImage(bulletImage, 0, 0, getWidth(), getHeight(), null);
     }
 

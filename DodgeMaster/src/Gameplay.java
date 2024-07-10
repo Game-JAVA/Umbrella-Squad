@@ -86,16 +86,13 @@ public class Gameplay extends JFrame implements Runnable {
 
     // Game loop
     public void run() {
-        // Polymorphic entities
-        Bullet bullet = new Bullet(100,100,70,40,1,"../assets/laser_sprite_00.png");
-        Shield shield = new Shield(100, 100, 50);
-
         while (true) {
             if (!isPaused) {
-                currentTime += .017;
+                currentTime += 17;
+                System.out.println(currentTime);
 
-                /* Bullet logic:
-                if (((int) Math.floor(currentTime)) % 2 == 0) {
+                if (currentTime % 2000 < 17) {
+                    Bullet bullet = new Bullet(100, 100, 70, 40, 1, "../assets/laser_sprite_00.png");
                     bullets.add(bullet);
                     bullet.spawnGen(player.getX(), player.getY(), player.getWidth(), player.getHeight(), getWidth(), getHeight());
                     backgroundPanel.add(bullet.getBulletPanel());
@@ -104,9 +101,9 @@ public class Gameplay extends JFrame implements Runnable {
 
                 for (Bullet i : bullets) {
                     i.move(getWidth(), getHeight());
-                    i.hasHit(player.getX(), player.getY(), player.getWidth(), player.getHeight());
+                    if (i.hasHit(player.getX(), player.getY(), player.getWidth(), player.getHeight()))
+                        togglePause();
                 }
-                 */
 
                 player.move(getWidth(), getHeight());
             }
@@ -122,33 +119,4 @@ public class Gameplay extends JFrame implements Runnable {
         revalidate();
         backgroundPanel.repaint();
     }
-
-    /*
-    public void activateShield() {
-        player.activateShield();
-        if (shieldTimer != null) {
-            shieldTimer.stop();
-        }
-        shieldTimer = new Timer(SHIELD_DURATION, e -> deactivateShield());
-        shieldTimer.setRepeats(false);
-        shieldTimer.start();
-    }
-
-    public void deactivateShield() {
-        player.deactivateShield();
-        shield.setActive(false);
-        shield.setVisible(true);
-        // Código para reposicionar o escudo ou torná-lo visível novamente
-        repositionShield();
-    }
-
-    private void repositionShield() {
-        // Reposicione o escudo para uma nova posição aleatória
-        int newX = (int) (Math.random() * (getWidth() - shield.getWidth()));
-        int newY = (int) (Math.random() * (getHeight() - shield.getHeight()));
-        shield.setX(newX);
-        shield.setY(newY);
-        shield.getShieldPanel().setBounds(newX, newY, shield.getWidth(), shield.getHeight());
-    }
-    */
 }

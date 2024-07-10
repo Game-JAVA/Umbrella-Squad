@@ -56,7 +56,7 @@ public class HomeScreen extends JFrame {
             iniciarButton.setContentAreaFilled(false); // Remove a área de conteúdo preenchida
             iniciarButton.setBorderPainted(false); // Remove a borda do botão
 
-            iniciarButton.addActionListener(e -> abrirTelaJogo());
+            iniciarButton.addActionListener(_ -> abrirTelaJogo());
 
             // Cria o JComboBox
             nivelComboBox = new JComboBox<>(new String[]{"Fácil", "Médio", "Difícil"});
