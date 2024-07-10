@@ -19,6 +19,9 @@ public class Player extends Rectangle {
     private boolean isFacingLeft = false;
     private int frameUpdate = 0;
     private int frameIndex = 0;
+    private static final int SHIELD_DURATION = 5000;
+    private boolean shielded;
+    private long shieldStartTime;
 
 
     // Constructor
@@ -176,7 +179,26 @@ public class Player extends Rectangle {
         super.setSpeedX(speedX);
         super.setSpeedY(speedY);
     }
-    // }}
+
+    public void activateShield() {
+        shielded = true;
+        shieldStartTime = System.currentTimeMillis();
+    }
+
+    public void deactivateShield() {
+        shielded = false;
+    }
+
+    public void updateShieldStatus() {
+        if (shielded && System.currentTimeMillis() - shieldStartTime >= SHIELD_DURATION) {
+            deactivateShield(); // Desativa o escudo após SHIELD_DURATION milissegundos
+        }
+    }
+
+    public Rectangle getBounds() {
+        return new Rectangle(getX(), getY(), getWidth(), getHeight());
+    }
+
 
     // Getters and Setters
     public JPanel getPlayerPanel() {return playerPanel;}

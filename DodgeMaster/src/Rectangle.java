@@ -61,7 +61,25 @@ public class Rectangle extends Shape {
     public void draw(Graphics g) {
         g.fillRect(super.getX(), super.getY(), this.width, this.height);
     }
-    // }
+
+    public Rectangle getBounds() {
+        return new Rectangle(super.getX(), super.getY(), this.width, this.height);
+    }
+
+    public boolean intersects(Rectangle r) {
+        return this.getX() < r.getX() + r.getWidth() &&
+                this.getX() + this.getWidth() > r.getX() &&
+                this.getY() < r.getY() + r.getHeight() &&
+                this.getY() + this.getHeight() > r.getY();
+    }
+
+
+    public void setBounds(int x, int y, int width, int height) {
+        super.setX(x);
+        super.setY(y);
+        this.width = width;
+        this.height = height;
+    }
 
     // Getters and Setters
     public int getWidth() {return width;}

@@ -1,15 +1,24 @@
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
 
 public class Gameplay extends JFrame implements Runnable {
+    // Atributes
+    private static final int SHIELD_DURATION = 5000;
     private final Image backgroundImage;
     private Player player;
     private boolean isPaused;
     private JPanel pausePanel;
+    private Shield shield;
+    private Timer shieldTimer;
+    private Clip clip;
 
     public Gameplay(String difficulty) {
         // Load the background image
@@ -17,6 +26,9 @@ public class Gameplay extends JFrame implements Runnable {
 
         // Initialize components
         initComponents();
+
+        // song play
+        tocarMusica("../assets/som_cidade.wav");
 
         // Keyboard listener for player actions and pause
         addKeyListener(new KeyAdapter() {
@@ -54,6 +66,7 @@ public class Gameplay extends JFrame implements Runnable {
         setMinimumSize(new Dimension(1360, 768));
 
         player = new Player((getWidth() / 2), (getHeight() / 2), 100, 4, "../assets/david_sprite_00.png");
+        shield = new Shield(100, 100, 50); // Initial position and diameter
 
         JPanel backgroundPanel = new JPanel() {
             @Override
@@ -65,6 +78,7 @@ public class Gameplay extends JFrame implements Runnable {
         };
 
         backgroundPanel.add(player.getPlayerPanel());
+        backgroundPanel.add(shield.getShieldPanel());
         backgroundPanel.setLayout(null);
         setContentPane(backgroundPanel);
         pack(); // Auto layout management
@@ -86,12 +100,56 @@ public class Gameplay extends JFrame implements Runnable {
         setComponentZOrder(pausePanel, 0); // Ensure pausePanel is always on top
     }
 
+    private void tocarMusica(String caminhoArquivo) {
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(caminhoArquivo).getAbsoluteFile());
+            clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.start();
+            clip.loop(Clip.LOOP_CONTINUOUSLY); // Faz a música tocar em loop
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void togglePause() {
         isPaused = !isPaused;
         pausePanel.setVisible(isPaused);
         if (isPaused) {
+            clip.stop(); // Para a música quando o jogo é pausado
+        } else {
+            clip.start(); // Retoma a música quando o jogo é retomado
+        }
+        if (isPaused) {
             requestFocus(); // Ensure the gameplay window retains focus
         }
+    }
+
+    public void activateShield() {
+        player.activateShield();
+        if (shieldTimer != null) {
+            shieldTimer.stop();
+        }
+        shieldTimer = new Timer(SHIELD_DURATION, e -> deactivateShield());
+        shieldTimer.setRepeats(false);
+        shieldTimer.start();
+    }
+
+    public void deactivateShield() {
+        player.deactivateShield();
+        shield.setActive(false);
+        shield.setVisible(true);
+        // Código para reposicionar o escudo ou torná-lo visível novamente
+        repositionShield();
+    }
+
+    private void repositionShield() {
+        // Reposicione o escudo para uma nova posição aleatória
+        int newX = (int) (Math.random() * (getWidth() - shield.getWidth()));
+        int newY = (int) (Math.random() * (getHeight() - shield.getHeight()));
+        shield.setX(newX);
+        shield.setY(newY);
+        shield.getShieldPanel().setBounds(newX, newY, shield.getWidth(), shield.getHeight());
     }
 
     // Game loop
@@ -106,6 +164,16 @@ public class Gameplay extends JFrame implements Runnable {
                 } catch (InterruptedException ex) {
                     ex.printStackTrace();
                 }
+
+                if (player.getBounds().intersects(shield.getBounds()) && shield.isActive()) {
+                    activateShield();
+                    shield.setActive(false);
+                    shield.setVisible(false);
+                    shieldTimer = new Timer(SHIELD_DURATION, e -> deactivateShield());
+                    shieldTimer.setRepeats(false);
+                    shieldTimer.start();
+                }
+
             } else {
                 // Pause logic
                 try {
