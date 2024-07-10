@@ -5,6 +5,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class Gameplay extends JFrame implements Runnable {
@@ -15,6 +16,7 @@ public class Gameplay extends JFrame implements Runnable {
     private JPanel backgroundPanel;
         // Entities
     private Player player;
+    private Hud hud;
     private List<Bullet> bullets;
     private List<Shield> shields;
         //
@@ -65,7 +67,8 @@ public class Gameplay extends JFrame implements Runnable {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(1360, 768));
 
-        player = new Player((getWidth() / 2), (getHeight() / 2), 100, 4, "../assets/david_sprite_00.png");
+        player = new Player((getWidth() / 2), (getHeight() / 2), 3, 4, "../assets/david_sprite_00.png");
+        hud = new Hud(10,10,100,45,"../assets/hearts_sprite_03.png");
 
         // Gameplay screen initiation and configuration
         backgroundPanel = new JPanel() {
@@ -80,6 +83,7 @@ public class Gameplay extends JFrame implements Runnable {
 
         backgroundPanel.setLayout(null);
         backgroundPanel.add(player.getPlayerPanel());
+        backgroundPanel.add(hud.getHudPanel());
         setContentPane(backgroundPanel);
         pack(); // Auto layout management in case something is missing
     }
@@ -99,12 +103,21 @@ public class Gameplay extends JFrame implements Runnable {
                     backgroundPanel.repaint();
                 }
 
-                for (Bullet i : bullets) {
-                    i.move(getWidth(), getHeight());
-                    if (i.hasHit(player.getX(), player.getY(), player.getWidth(), player.getHeight()))
-                        togglePause();
+                Iterator<Bullet> iterator = bullets.iterator();
+                while (iterator.hasNext()) {
+                    Bullet bullet = iterator.next();
+                    bullet.move(getWidth(), getHeight());
+                    if (bullet.hasHit(player.getX(), player.getY(), player.getWidth(), player.getHeight())) {
+                        player.getHit();
+                        hud.setFrame(0);
+
+                        backgroundPanel.remove(bullet.getBulletPanel());
+                        iterator.remove(); // Remove the bullet from the list
+                    }
                 }
 
+                if (currentTime % 200 < 17)
+                    hud.setFrame(player.getHealth());
                 player.move(getWidth(), getHeight());
             }
             // Buffer to handle the refresh rate

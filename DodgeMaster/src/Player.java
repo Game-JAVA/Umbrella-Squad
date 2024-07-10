@@ -185,9 +185,11 @@ public class Player extends Rectangle {
     public JPanel getPlayerPanel() {return playerPanel;}
     public boolean isMoving() {return isMoving;}
     public boolean HaveShield() {return haveShield;}
+    public int getHealth() {return health;}
 
     public void stopMoving() {isMoving = false;}
     public void removeShield() {haveShield = false;}
+    public void getHit() {health-=1;}
     public void setFrame(int frameNumber) {
         try {
             String imagePath = String.format("../assets/david_sprite_%02d.png", frameNumber);
