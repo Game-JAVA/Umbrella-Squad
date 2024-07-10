@@ -73,6 +73,7 @@ public class Rectangle extends Shape {
                 this.getY() + this.getHeight() > r.getY();
     }
 
+    // Getters and Setters
 
     public void setBounds(int x, int y, int width, int height) {
         super.setX(x);
@@ -81,7 +82,6 @@ public class Rectangle extends Shape {
         this.height = height;
     }
 
-    // Getters and Setters
     public int getWidth() {return width;}
     public int getHeight() {return height;}
 
