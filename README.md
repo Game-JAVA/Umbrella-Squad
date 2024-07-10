@@ -26,6 +26,92 @@ DodgeMaster é um jogo indie bullet hell onde o objetivo é desviar dos obstácu
 ## Link do Diagrama UML
 [Diagrama UML](https://app.diagrams.net/#G14IMBfOikrQaJrdQjvGuJhNwxqZ268sJ8#%7B%22pageId%22%3A%22xYIkqrIyDs8MGjE_6Ou5%22%7D)
 
+## Mermaid
+```mermaid
+classDiagram
+    class Shape {
+        - x: int
+        - y: int
+        - speedX: int
+        - speedY: int
+        + move() int
+        + draw() void
+    }
+
+    class Rectangle {
+        - width: int
+        - height: int
+        + move() void Override
+        + draw() void
+        + getBounds() Rectangle
+        + intersects() bool
+    }
+
+    class Player {
+        - health: int
+        - speedIndex: int
+        - playerPanel: JPanel
+        - playerImage: Image
+        + move() void Override
+        + draw() void
+        + keyRelease() void
+        + keyPressed() void
+        - updateSpeed() void
+    }
+
+    class Shield {
+        - active: bool
+        - shieldPanel: JPanel
+        + isActive() bool
+        + setActive() void
+        + getShieldPanel() JPanel
+        + setVisible() bool
+        + draw() void
+    }
+
+    class Bullet {
+        - damage: int
+        + move() void Override
+    }
+
+    class HomeScreen {
+        - nivelComboBox: String
+        - nivelSelecionado: String
+        - abrirTelaJogo() void
+        + main() void
+    }
+
+    class PauseScreen {
+        - pauseImage: BufferedImage
+        - gameplay: Gameplay
+    }
+
+    class Gameplay {
+        - width: int
+        - height: int
+        - player: Player
+        + run() void
+    }
+
+ class JPanel {
+    }
+
+    class ImagePanel {
+        - backgroundImage: Image
+        - gameplay: Gameplay
+    }
+
+    Shape --|> Rectangle
+    Rectangle --|> Player
+    Rectangle --|> Shield
+    Rectangle --|> Bullet
+
+    JPanel <|-- ImagePanel
+
+
+
+```
+
 ## Requisitos
 - IDE Java ou compilador (recomendado: IntelliJ).
 
