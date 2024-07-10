@@ -8,50 +8,58 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class Gameplay extends JFrame implements Runnable {
     // Attributes
-    private static final int SHIELD_DURATION = 5000;
+        // Screens
     private final Image backgroundImage;
-    private Player player;
-    private boolean isPaused;
-    private JPanel pausePanel;
-    private Shield shield;
-    private Timer shieldTimer;
-    private Clip clip;
-    private Timer shieldInitTimer;
+    private final Image pauseImage;
     private JPanel backgroundPanel;
+        // Entities
+    private Player player;
+    private Hud hud;
+    private List<Bullet> bullets;
+    private List<Shield> shields;
+        //
+    private double currentTime;
+    private boolean isPaused;
+    private Clip clip;
 
+    // Constructor
     public Gameplay(String difficulty) {
-        // Load the background image
+        // Load images
         backgroundImage = new ImageIcon("../assets/bg_gameplayCity.png").getImage();
+        pauseImage = new ImageIcon("../assets/bg_pauseScreen.png").getImage();
+
+        // Initialize lists
+        bullets = new ArrayList<>();
+        shields = new ArrayList<>();
 
         // Initialize components
         initComponents();
 
         // song play
-        tocarMusica("../assets/som_cidade.wav");
+        playSong("../assets/som_cidade.wav");
 
         // Keyboard listener for player actions and pause
         addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent evt) {
-                if (evt.getKeyCode() == KeyEvent.VK_P) {
+                if (evt.getKeyCode() == KeyEvent.VK_P || evt.getKeyCode() == KeyEvent.VK_ESCAPE)
                     togglePause();
-                } else {
+                else
                     player.keyPressed(evt);
-                }
             }
 
-            public void keyReleased(KeyEvent evt) {
-                player.keyRelease(evt);
-            }
+            public void keyReleased(KeyEvent evt) {player.keyRelease(evt);}
         });
 
         // ComponentListener to handle window resizing
         addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent e) {
                 player.updateSize(getWidth(), getHeight());
-                pausePanel.setBounds(0, 0, getWidth(), getHeight()); // Adjust pausePanel bounds on resize
             }
         });
 
@@ -67,147 +75,80 @@ public class Gameplay extends JFrame implements Runnable {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(1360, 768));
 
-        player = new Player((getWidth() / 2), (getHeight() / 2), 100, 4, "../assets/david_sprite_00.png");
+        player = new Player((getWidth() / 2), (getHeight() / 2), 3, 4, "../assets/david_sprite_00.png");
+        hud = new Hud(10,10,100,45,"../assets/hearts_sprite_03.png");
 
+        // Gameplay screen initiation and configuration
         backgroundPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                // Draw the background image, stretching to the window width and height
                 g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+                if (isPaused)
+                    g.drawImage(pauseImage, 0, 0, getWidth(), getHeight(), this);
             }
         };
 
-        backgroundPanel.add(player.getPlayerPanel());
         backgroundPanel.setLayout(null);
+        backgroundPanel.add(player.getPlayerPanel());
+        backgroundPanel.add(hud.getHudPanel());
         setContentPane(backgroundPanel);
-        pack(); // Auto layout management
-
-        // Create the pause panel
-        pausePanel = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                // Draw the pause image, stretching to the window width and height
-                Image pauseImage = new ImageIcon("../assets/PauseScreen.JPEG").getImage();
-                g.drawImage(pauseImage, 0, 0, getWidth(), getHeight(), this);
-            }
-        };
-        pausePanel.setOpaque(false);
-        pausePanel.setVisible(false); // Initially invisible
-        pausePanel.setBounds(0, 0, getWidth(), getHeight());
-        backgroundPanel.add(pausePanel);
-
-        shieldInitTimer = new Timer(20000, e -> initializeShield());
-        shieldInitTimer.setRepeats(false);
-
-        // Verifica se o timer está rodando antes de iniciar
-        if (!shieldInitTimer.isRunning()) {
-            shieldInitTimer.start();
-        }
+        pack(); // Auto layout management in case something is missing
     }
-
-    private void initializeShield() {
-            int leftLimit = (getWidth() * 4) / 100;
-            int rightLimit = getWidth() - (getWidth() * 6) / 100 - player.getWidth();
-            int topLimit = (getHeight() * 2) / 100;
-            int bottomLimit = getHeight() - (getHeight() * 9) / 100 - player.getHeight();
-
-            int initialX = leftLimit + (int) (Math.random() * (rightLimit - leftLimit));
-            int initialY = topLimit + (int) (Math.random() * (bottomLimit - topLimit));
-
-            shield = new Shield(initialX, initialY, 50); // Posicionamento inicial do escudo com coordenadas aleatórias
-            backgroundPanel.add(shield.getShieldPanel());
-            shield.getShieldPanel().setBounds(initialX, initialY, shield.getWidth(), shield.getHeight());
-            backgroundPanel.repaint();
-    }
-
-
-
-    private void tocarMusica(String caminhoArquivo) {
-        try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(caminhoArquivo).getAbsoluteFile());
-            clip = AudioSystem.getClip();
-            clip.open(audioInputStream);
-            clip.start();
-            clip.loop(Clip.LOOP_CONTINUOUSLY); // Faz a música tocar em loop
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void togglePause() {
-        isPaused = !isPaused;
-        pausePanel.setVisible(isPaused);
-        if (isPaused) {
-            clip.stop(); // Para a música quando o jogo é pausado
-        } else {
-            clip.start(); // Retoma a música quando o jogo é retomado
-        }
-        if (isPaused) {
-            requestFocus(); // Ensure the gameplay window retains focus
-        }
-    }
-
-    public void activateShield() {
-        player.activateShield();
-        if (shieldTimer != null) {
-            shieldTimer.stop();
-        }
-        shieldTimer = new Timer(SHIELD_DURATION, e -> deactivateShield());
-        shieldTimer.setRepeats(false);
-        shieldTimer.start();
-    }
-
-    public void deactivateShield() {
-        player.deactivateShield();
-        shield.setActive(false);
-        shield.setVisible(true);
-        repositionShield();
-    }
-
-    private void repositionShield() {
-        int leftLimit = (getWidth() * 4) / 100;
-        int rightLimit = getWidth() - (getWidth() * 6) / 100 - shield.getWidth();
-        int topLimit = (getHeight() * 2) / 100;
-        int bottomLimit = getHeight() - (getHeight() * 9) / 100 - shield.getHeight();
-
-        int newX = leftLimit + (int) (Math.random() * (rightLimit - leftLimit));
-        int newY = topLimit + (int) (Math.random() * (bottomLimit - topLimit));
-
-        shield.setX(newX);
-        shield.setY(newY);
-        shield.getShieldPanel().setBounds(newX, newY, shield.getWidth(), shield.getHeight());
-        shield.setActive(true); // Garante que o escudo seja ativado
-        shield.setVisible(true); // Garante que o escudo seja visível
-    }
-
 
     // Game loop
     public void run() {
         while (true) {
             if (!isPaused) {
+                currentTime += 17;
+                System.out.println(currentTime);
+
+                if (currentTime % 2000 < 17) {
+                    Bullet bullet = new Bullet(100, 100, 70, 40, 1, "../assets/laser_sprite_00.png");
+                    bullets.add(bullet);
+                    bullet.spawnGen(player.getX(), player.getY(), player.getWidth(), player.getHeight(), getWidth(), getHeight());
+                    backgroundPanel.add(bullet.getBulletPanel());
+                    backgroundPanel.repaint();
+                }
+
+                Iterator<Bullet> iterator = bullets.iterator();
+                while (iterator.hasNext()) {
+                    Bullet bullet = iterator.next();
+                    bullet.move(getWidth(), getHeight());
+                    if (bullet.hasHit(player.getX(), player.getY(), player.getWidth(), player.getHeight())) {
+                        player.getHit();
+                        hud.setFrame(0);
+
+                        backgroundPanel.remove(bullet.getBulletPanel());
+                        iterator.remove(); // Remove the bullet from the list
+                    }
+                }
+
+                if (currentTime % 200 < 17)
+                    hud.setFrame(player.getHealth());
                 player.move(getWidth(), getHeight());
-
-                try {
-                    Thread.sleep(17);
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
-                }
-
-                if (shield != null && player.getBounds().intersects(shield.getBounds()) && shield.isActive()) {
-                    activateShield();
-                    shield.setActive(false);
-                    shield.setVisible(false);
-                }
-
-            } else {
-                try {
-                    Thread.sleep(100); // Reduce CPU usage while paused
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
-                }
             }
+            // Buffer to handle the refresh rate
+            try { Thread.sleep(17);
+            } catch (InterruptedException ex) {ex.printStackTrace();}
         }
+    }
+
+    // Other Functions:
+    public void togglePause() {
+        isPaused = !isPaused;
+        revalidate();
+        backgroundPanel.repaint();
+    }
+
+    private void playSong(String filePath) {
+        try {
+            AudioInputStream audioInputStream =
+                    AudioSystem.getAudioInputStream(new File(filePath).getAbsoluteFile());
+            clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.start();
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
+        } catch (Exception e) {e.printStackTrace();}
     }
 }
