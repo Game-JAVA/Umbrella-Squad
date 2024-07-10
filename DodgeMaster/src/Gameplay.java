@@ -1,9 +1,13 @@
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -22,6 +26,7 @@ public class Gameplay extends JFrame implements Runnable {
         //
     private double currentTime;
     private boolean isPaused;
+    private Clip clip;
 
     // Constructor
     public Gameplay(String difficulty) {
@@ -35,6 +40,9 @@ public class Gameplay extends JFrame implements Runnable {
 
         // Initialize components
         initComponents();
+
+        // song play
+        playSong("../assets/som_cidade.wav");
 
         // Keyboard listener for player actions and pause
         addKeyListener(new KeyAdapter() {
@@ -131,5 +139,16 @@ public class Gameplay extends JFrame implements Runnable {
         isPaused = !isPaused;
         revalidate();
         backgroundPanel.repaint();
+    }
+
+    private void playSong(String filePath) {
+        try {
+            AudioInputStream audioInputStream =
+                    AudioSystem.getAudioInputStream(new File(filePath).getAbsoluteFile());
+            clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.start();
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
+        } catch (Exception e) {e.printStackTrace();}
     }
 }

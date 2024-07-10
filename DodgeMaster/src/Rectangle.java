@@ -26,7 +26,7 @@ public class Rectangle extends Shape {
         this.height = 90;
     }
 
-    // Shield Constructor
+        // Shield Constructor
     public Rectangle(int x, int y, int diameter) {
         super(x, y);
         this.width = diameter;
