@@ -12,12 +12,15 @@ public class DifficultySettings {
     private void setDifficulty(String difficulty) {
         switch (difficulty.toLowerCase()) {
             case "easy":
+            case "fácil":
                 currentConfig = EASY_CONFIG;
                 break;
             case "medium":
+            case "médio":
                 currentConfig = MEDIUM_CONFIG;
                 break;
             case "hard":
+            case "difícil":
                 currentConfig = HARD_CONFIG;
                 break;
             default:
@@ -29,7 +32,7 @@ public class DifficultySettings {
     public DifficultyConfig getCurrentConfig() {return currentConfig;}
 
     // Inter class to handle values
-    private static class DifficultyConfig {
+    public static class DifficultyConfig {
         private final int shieldGenGap; // Shield spawn try time gap
         private final int playerSpeed;  // :)
         private final int bulletInitGenPeriod;  // Initial gap between bullets spawn

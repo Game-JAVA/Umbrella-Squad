@@ -16,6 +16,8 @@ public class Gameplay extends JFrame implements Runnable {
     // Attributes
     private double currentTime;
     private boolean isPaused;
+    private DifficultySettings difficultySettings;
+    private DifficultySettings.DifficultyConfig config;
         // Screens
     private final Image backgroundImage;
     private final Image pauseImage;
@@ -28,6 +30,10 @@ public class Gameplay extends JFrame implements Runnable {
 
     // Constructor
     public Gameplay(String difficulty) {
+        // Initialize DifficultySettings
+        difficultySettings = new DifficultySettings(difficulty);
+        config = difficultySettings.getCurrentConfig();
+
         // Initializing components
         backgroundImage = new ImageIcon("../assets/bg_gameplayCity.png").getImage();
         pauseImage = new ImageIcon("../assets/bg_pauseScreen.png").getImage();
@@ -68,7 +74,7 @@ public class Gameplay extends JFrame implements Runnable {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(1360, 768));
 
-        player = new Player((getWidth() / 2), (getHeight() / 2), 3, 4, "../assets/david_sprite_00.png");
+        player = new Player((getWidth() / 2), (getHeight() / 2), 3, config.getPlayerSpeed(), "../assets/david_sprite_00.png");
         hud = new Hud(10,10,100,45,"../assets/hearts_sprite_03.png");
 
         // Gameplay screen initiation and configuration
@@ -110,8 +116,9 @@ public class Gameplay extends JFrame implements Runnable {
     }
 
     private void spawnBullet() {
-        if (currentTime % 2000 < 17) {
-            Bullet bullet = new Bullet(100, 100, 80, 30, "../assets/laser_sprite_00.png");
+        // Use BulletInitGenPeriod from config
+        if (currentTime % config.getBulletInitGenPeriod() < 17) {
+            Bullet bullet = new Bullet(100, 100, config.getBulletInitSpeed(), 30, "../assets/laser_sprite_00.png");
             bullets.add(bullet);
             bullet.spawnGen(player.getX(), player.getY(), player.getWidth(), player.getHeight(), getWidth(), getHeight());
             backgroundPanel.add(bullet.getBulletPanel());
@@ -137,13 +144,15 @@ public class Gameplay extends JFrame implements Runnable {
     private void handleBulletHit(Bullet bullet) {
         if (player.isShielded())
             player.removeShield();
-        else player.getHit();
+        else
+            player.getHit();
         hud.setFrame(0);
         backgroundPanel.remove(bullet.getBulletPanel());
     }
 
     private void spawnShield() {
-        if (currentTime % 5000 < 17 && shields.isEmpty() && !player.isShielded()) {
+        // Use ShieldGenGap from config
+        if (currentTime % config.getShieldGenGap() < 17 && shields.isEmpty() && !player.isShielded()) {
             Shield shield = new Shield(0, 0, 30);
             shield.spawnGen(getWidth(), getHeight());
             shields.add(shield);
@@ -169,7 +178,6 @@ public class Gameplay extends JFrame implements Runnable {
         if (currentTime % 200 < 17 && !player.isShielded())
             hud.setFrame(player.getHealth());
     }
-
 
     // Other Functions:
     public void togglePause() {
