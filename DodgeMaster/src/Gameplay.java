@@ -14,19 +14,20 @@ import java.util.List;
 
 public class Gameplay extends JFrame implements Runnable {
     // Attributes
-        // Screens
+    // Screens
     private final Image backgroundImage;
     private final Image pauseImage;
     private JPanel backgroundPanel;
-        // Entities
+    // Entities
     private Player player;
     private Hud hud;
     private List<Bullet> bullets;
     private List<Shield> shields;
-        //
+    //
     private double currentTime;
     private boolean isPaused;
     private Clip clip;
+    private Timer scoreTimer;
 
     // Constructor
     public Gameplay(String difficulty) {
@@ -68,6 +69,9 @@ public class Gameplay extends JFrame implements Runnable {
         createBufferStrategy(2);
         Thread t = new Thread(this);
         t.start();
+
+        // Start score timer
+        startScoreTimer();
     }
 
     private void initComponents() {
@@ -76,7 +80,7 @@ public class Gameplay extends JFrame implements Runnable {
         setMinimumSize(new Dimension(1360, 768));
 
         player = new Player((getWidth() / 2), (getHeight() / 2), 3, 4, "../assets/david_sprite_00.png");
-        hud = new Hud(10,10,100,45,"../assets/hearts_sprite_03.png");
+        hud = new Hud(10, 10, 100, 45, "../assets/hearts_sprite_03.png");
 
         // Gameplay screen initiation and configuration
         backgroundPanel = new JPanel() {
@@ -86,6 +90,9 @@ public class Gameplay extends JFrame implements Runnable {
                 g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
                 if (isPaused)
                     g.drawImage(pauseImage, 0, 0, getWidth(), getHeight(), this);
+
+                // Draw the score
+                hud.drawScore(g, getWidth());
             }
         };
 
@@ -129,9 +136,22 @@ public class Gameplay extends JFrame implements Runnable {
                 player.move(getWidth(), getHeight());
             }
             // Buffer to handle the refresh rate
-            try { Thread.sleep(17);
-            } catch (InterruptedException ex) {ex.printStackTrace();}
+            try {
+                Thread.sleep(17);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
         }
+    }
+
+    // Start score timer
+    private void startScoreTimer() {
+        scoreTimer = new Timer(1000, e -> {
+            if (!isPaused) {
+                hud.addScore(10); // Incrementa a pontuação em 10 a cada segundo
+            }
+        });
+        scoreTimer.start();
     }
 
     // Other Functions:
@@ -149,6 +169,8 @@ public class Gameplay extends JFrame implements Runnable {
             clip.open(audioInputStream);
             clip.start();
             clip.loop(Clip.LOOP_CONTINUOUSLY);
-        } catch (Exception e) {e.printStackTrace();}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
