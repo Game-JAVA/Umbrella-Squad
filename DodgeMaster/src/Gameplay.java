@@ -211,9 +211,4 @@ public class Gameplay extends JFrame implements Runnable {
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new Gameplay("easy");
-        });
-    }
 }
