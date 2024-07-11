@@ -1,9 +1,6 @@
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.Rectangle;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
@@ -55,7 +52,9 @@ public class Gameplay extends JFrame implements Runnable {
                     player.keyPressed(evt);
             }
 
-            public void keyReleased(KeyEvent evt) {player.keyRelease(evt);}
+            public void keyReleased(KeyEvent evt) {
+                player.keyRelease(evt);
+            }
         });
 
         // ComponentListener to handle window resizing
@@ -128,7 +127,8 @@ public class Gameplay extends JFrame implements Runnable {
                     if (bullet.hasHit(player.getX(), player.getY(), player.getWidth(), player.getHeight())) {
                         if (player.isShielded())
                             player.removeShield();
-                        else player.getHit();
+                        else
+                            player.getHit();
                         hud.setFrame(0);
 
                         backgroundPanel.remove(bullet.getBulletPanel());
@@ -184,6 +184,16 @@ public class Gameplay extends JFrame implements Runnable {
     // Other Functions:
     public void togglePause() {
         isPaused = !isPaused;
+        if (isPaused) {
+            if (clip != null && clip.isRunning()) {
+                clip.stop(); // Pause the music
+            }
+        } else {
+            if (clip != null && !clip.isRunning()) {
+                clip.start(); // Resume the music
+                clip.loop(Clip.LOOP_CONTINUOUSLY);
+            }
+        }
         revalidate();
         backgroundPanel.repaint();
     }
@@ -199,5 +209,11 @@ public class Gameplay extends JFrame implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new Gameplay("easy");
+        });
     }
 }
