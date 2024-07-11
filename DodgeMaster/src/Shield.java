@@ -5,14 +5,13 @@ import java.util.Random;
 public class Shield extends Rectangle {
     private final JPanel shieldPanel;
 
-    public Shield(int x, int y, int size) {
+    public Shield(int x, int y, int size,String imagePath) {
         super(x, y, size, size);
 
         shieldPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                g.setColor(new Color(85, 209, 208)); // Color #55d1d0
                 g.fillRect(0, 0, getWidth(), getHeight());
             }
         };
