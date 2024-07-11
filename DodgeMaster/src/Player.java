@@ -184,18 +184,29 @@ public class Player extends Rectangle {
     // Getters and Setters:
     public JPanel getPlayerPanel() {return playerPanel;}
     public boolean isMoving() {return isMoving;}
-    public boolean HaveShield() {return haveShield;}
+    public boolean isShielded() {return haveShield;}
     public int getHealth() {return health;}
+    public void getShield() {haveShield = true;}
 
     public void stopMoving() {isMoving = false;}
     public void removeShield() {haveShield = false;}
-    public void getHit() {health-=1;}
+    public void getHit() {health--;}
     public void setFrame(int frameNumber) {
-        try {
-            String imagePath = String.format("../assets/david_sprite_%02d.png", frameNumber);
-            playerImage = ImageIO.read(new File(imagePath));
-        } catch (IOException e) {e.printStackTrace();}
-        playerPanel.repaint();
+        if (haveShield) {
+            try {
+                String imagePath = String.format("../assets/shielded_sprite_%02d.png", frameNumber);
+                playerImage = ImageIO.read(new File(imagePath));
+            } catch (IOException e) {e.printStackTrace();}
+            playerPanel.repaint();
+        } else {
+            try {
+                String imagePath = String.format("../assets/david_sprite_%02d.png", frameNumber);
+                playerImage = ImageIO.read(new File(imagePath));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            playerPanel.repaint();
+        }
     }
 
     // }

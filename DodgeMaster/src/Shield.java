@@ -1,82 +1,47 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.util.Random;
 
 public class Shield extends Rectangle {
-    // Attributes
-    private int lifeSpan; // In milliseconds
-    private JPanel shieldPanel;
-    private BufferedImage shieldImage;
-    private Timer timer;
+    private final JPanel shieldPanel;
 
-    // Constructor
-    public Shield(int x, int y, int diameter) {
-        super(x, y, diameter, diameter);
-        this.lifeSpan = lifeSpan;
+    public Shield(int x, int y, int size) {
+        super(x, y, size, size);
 
         shieldPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                draw(g);
+                g.setColor(new Color(85, 209, 208)); // Color #55d1d0
+                g.fillRect(0, 0, getWidth(), getHeight());
             }
         };
+
         shieldPanel.setOpaque(false);
-        shieldPanel.setBounds(x, y, diameter, diameter);
-
-        timer = new Timer(lifeSpan, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {removeShield();}
-        });
-        timer.setRepeats(false); // Executes only once
-        timer.start();
-    }
-
-    // Methods:
-    public void draw(Graphics g) {
-        g.setColor(Color.BLUE);
-        g.fillOval(0, 0, getWidth(), getHeight());
-    }
-
-    public void removeShield() {
-        // Removes the shield if it's not picked up yet
-        if (timer != null)
-            timer.stop();
-        // Removes the shield from the plane
-        if (shieldPanel.getParent() != null) {
-            shieldPanel.getParent().remove(shieldPanel);
-            shieldPanel.getParent().revalidate();
-            shieldPanel.getParent().repaint();
-        }
+        shieldPanel.setBounds(x, y, size, size);
     }
 
     public void spawnGen(int screenWidth, int screenHeight) {
         Random r = new Random();
 
-        int maxX = screenWidth - ((screenWidth*6)/100) - getWidth();
-        int minX = (screenWidth*4)/100;
-        int maxY = screenHeight - ((screenHeight*9)/100) - getHeight();
-        int minY = (screenHeight*2)/100;
+        int xMin = (screenWidth * 4) / 100;
+        int xMax = (screenWidth - (screenWidth * 6) / 100);
+        int yMin = (screenHeight * 2) / 100;
+        int yMax = (screenHeight - (screenHeight * 9) / 100);
 
-        setX(r.nextInt(maxX-minX+1)+minX);
-        setY(r.nextInt(maxY-minY+1)-minY);
+        setX(r.nextInt((xMax - getWidth()) - xMin + 1) + xMin);
+        setY(r.nextInt((yMax - getHeight()) - yMin + 1) + yMin);
+        shieldPanel.setLocation(getX(), getY());
     }
 
-    // Getters and Setters:
+    public boolean hasHit(int playerX, int playerY, int playerWidth, int playerHeight) {
+        int shieldRight = getX() + getWidth();
+        int shieldBottom = getY() + getHeight();
+        int playerRight = playerX + playerWidth;
+        int playerBottom = playerY + playerHeight;
+
+        return getX() < playerRight && shieldRight > playerX && getY() < playerBottom && shieldBottom > playerY;
+    }
+
     public JPanel getShieldPanel() {return shieldPanel;}
-
-    public void collectShield() {removeShield();}
-
-    // toString
-    @Override
-    public String toString() {
-        return super.toString() + " Shield{" +
-                "lifeSpan=" + lifeSpan +
-                ", shieldPanel=" + shieldPanel +
-                ", timer=" + timer +
-                '}';
-    }
 }
