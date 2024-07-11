@@ -69,7 +69,7 @@ public class Hud extends Rectangle {
         int rectX = (screenWidth - rectWidth) / 2;
         int rectY = 10;
 
-        g.setColor(new Color(0, 0, 0, 150)); // Semi-transparent black
+        g.setColor(new Color(0, 0, 0, 0)); // Semi-transparent black
         g.fillRect(rectX, rectY, rectWidth, rectHeight);
 
         // Draw score text
