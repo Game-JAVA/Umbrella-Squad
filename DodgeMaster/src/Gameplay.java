@@ -3,7 +3,6 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.Rectangle;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
@@ -113,7 +112,7 @@ public class Gameplay extends JFrame implements Runnable {
                     backgroundPanel.repaint();
                 }
 
-                // Bullet/player collision treatment
+                // Individual bullet treatments
                 Iterator<Bullet> iteratorB = bullets.iterator();
                 while (iteratorB.hasNext()) {
                     Bullet bullet = iteratorB.next();
@@ -127,11 +126,16 @@ public class Gameplay extends JFrame implements Runnable {
                         backgroundPanel.remove(bullet.getBulletPanel());
                         iteratorB.remove(); // Remove the bullet from the list
                     }
+
+                    if (bullet.isOutOfBounds(getWidth(),getHeight())) {
+                        backgroundPanel.remove(bullet.getBulletPanel());
+                        iteratorB.remove();
+                    }
                 }
 
                 // Shield spawn routine
                 if (currentTime % 5000 < 17) {
-                    Shield shield = new Shield(0, 0, 50);
+                    Shield shield = new Shield(0, 0, 30);
                     shield.spawnGen(getWidth(), getHeight());
                     shields.add(shield);
                     backgroundPanel.add(shield.getShieldPanel());

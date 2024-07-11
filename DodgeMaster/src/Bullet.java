@@ -1,16 +1,13 @@
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.Random;
 
 public class Bullet extends Rectangle {
     // Attributes
     private final int damage;
     private final JPanel bulletPanel;
-    private BufferedImage bulletImage;
+    private final BufferedImage bulletImage;
     private int spawnSide;
     private boolean isVertical;
 
@@ -18,19 +15,8 @@ public class Bullet extends Rectangle {
     public Bullet(int x, int y, int width, int height, int damage, String imagePath) {
         super(x, y, width, height);
         this.damage = damage;
-
-        try { bulletImage = ImageIO.read(new File(imagePath));
-        } catch (IOException e) {e.printStackTrace();}
-
-        bulletPanel = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                draw(g);
-            }
-        };
-        bulletPanel.setOpaque(false);
-        bulletPanel.setBounds(x, y, width, height);
+        bulletImage = loadImage(imagePath); // Load default image
+        bulletPanel = createPanel(); // Initialize the panel
     }
 
     // Methods:

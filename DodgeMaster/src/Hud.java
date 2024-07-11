@@ -6,18 +6,16 @@ import java.io.File;
 import java.io.IOException;
 
 public class Hud extends Rectangle{
-    private JPanel hudPanel;
+    // Attributes
+    private final JPanel hudPanel;
     private BufferedImage hudImage;
 
     // Constructor
     public Hud(int x, int y, int width, int height, String imagePath) {
         super(x, y, width, height);
 
-        try {
-            hudImage = ImageIO.read(new File(imagePath));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        try { hudImage = ImageIO.read(new File(imagePath));
+        } catch (IOException e) {e.printStackTrace();}
 
         hudPanel = new JPanel() {
             @Override
@@ -26,6 +24,8 @@ public class Hud extends Rectangle{
                 if (hudImage != null) {
                     g.drawImage(hudImage, 0, 0, getWidth(), getHeight(), null);
                 }
+                g.setFont(new Font("Arial", Font.BOLD, 20));
+                g.setColor(Color.WHITE);
             }
         };
         hudPanel.setOpaque(false);

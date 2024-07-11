@@ -1,18 +1,17 @@
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class Rectangle extends Shape {
     // Attributes
     private int width;
     private int height;
+    private BufferedImage image;
 
     // Constructor {
-    public Rectangle(int x, int y, int speedX, int speedY, int width, int height) {
-        super(x, y, speedX, speedY);
-        this.width = width;
-        this.height = height;
-    }
-
-        // Simple Constructor
     public Rectangle(int x, int y, int width, int height) {
         super(x, y);
         this.width = width;
@@ -25,16 +24,30 @@ public class Rectangle extends Shape {
         this.width = 80;
         this.height = 90;
     }
-
-        // Shield Constructor
-    public Rectangle(int x, int y, int diameter) {
-        super(x, y);
-        this.width = diameter;
-        this.height = diameter;
-    }
     // }
 
     // Methods:
+    public BufferedImage loadImage(String imagePath) {
+        try { return ImageIO.read(new File(imagePath));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public JPanel createPanel() {
+        JPanel panel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                draw(g);
+            }
+        };
+        panel.setOpaque(false); // Handle transparency
+        panel.setBounds(getX(),  getY(), width, height);
+        return panel;
+    }
+
     @Override
     public void move(int screenWidth, int screenHeight) {
         super.move(screenWidth, screenHeight);
@@ -57,9 +70,9 @@ public class Rectangle extends Shape {
         }
     }
 
-
+    @Override
     public void draw(Graphics g) {
-        g.fillRect(super.getX(), super.getY(), this.width, this.height);
+        g.drawImage(this.image, super.getX(), super.getY(), this.width, this.height, null);
     }
 
     // Getters and Setters:
