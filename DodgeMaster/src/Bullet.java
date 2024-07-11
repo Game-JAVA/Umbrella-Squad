@@ -5,16 +5,14 @@ import java.util.Random;
 
 public class Bullet extends Rectangle {
     // Attributes
-    private final int damage;
     private final JPanel bulletPanel;
     private final BufferedImage bulletImage;
     private int spawnSide;
     private boolean isVertical;
 
     // Constructor
-    public Bullet(int x, int y, int width, int height, int damage, String imagePath) {
+    public Bullet(int x, int y, int width, int height, String imagePath) {
         super(x, y, width, height);
-        this.damage = damage;
         bulletImage = loadImage(imagePath); // Load default image
         bulletPanel = createPanel(); // Initialize the panel
     }
@@ -142,7 +140,6 @@ public class Bullet extends Rectangle {
                 ", y=" + getY() +
                 ", speedX=" + getSpeedX() +
                 ", speedY=" + getSpeedY() +
-                ", damage=" + damage +
                 '}';
     }
 }

@@ -14,6 +14,8 @@ import java.util.List;
 
 public class Gameplay extends JFrame implements Runnable {
     // Attributes
+    private double currentTime;
+    private boolean isPaused;
         // Screens
     private final Image backgroundImage;
     private final Image pauseImage;
@@ -21,36 +23,26 @@ public class Gameplay extends JFrame implements Runnable {
         // Entities
     private Player player;
     private Hud hud;
-    private List<Bullet> bullets;
-    private List<Shield> shields;
-        //
-    private double currentTime;
-    private boolean isPaused;
-    private Clip clip;
+    private final List<Bullet> bullets;
+    private final List<Shield> shields;
 
     // Constructor
     public Gameplay(String difficulty) {
-        // Load images
+        // Initializing components
         backgroundImage = new ImageIcon("../assets/bg_gameplayCity.png").getImage();
         pauseImage = new ImageIcon("../assets/bg_pauseScreen.png").getImage();
-
-        // Initialize lists
         bullets = new ArrayList<>();
         shields = new ArrayList<>();
 
-        // Initialize components
+        // Handling entities
         initComponents();
-
-        // song play
-        playSong("../assets/som_cidade.wav");
 
         // Keyboard listener for player actions and pause
         addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent evt) {
                 if (evt.getKeyCode() == KeyEvent.VK_P || evt.getKeyCode() == KeyEvent.VK_ESCAPE)
                     togglePause();
-                else
-                    player.keyPressed(evt);
+                else player.keyPressed(evt);
             }
 
             public void keyReleased(KeyEvent evt) {player.keyRelease(evt);}
@@ -64,6 +56,7 @@ public class Gameplay extends JFrame implements Runnable {
         });
 
         setVisible(true);
+        playSong();
         // Buffering
         createBufferStrategy(2);
         Thread t = new Thread(this);
@@ -101,62 +94,13 @@ public class Gameplay extends JFrame implements Runnable {
         while (true) {
             if (!isPaused) {
                 currentTime += 17;
-                System.out.println(currentTime);
 
-                // Bullet spawn routine
-                if (currentTime % 2000 < 17) {
-                    Bullet bullet = new Bullet(100, 100, 80, 30, 1, "../assets/laser_sprite_00.png");
-                    bullets.add(bullet);
-                    bullet.spawnGen(player.getX(), player.getY(), player.getWidth(), player.getHeight(), getWidth(), getHeight());
-                    backgroundPanel.add(bullet.getBulletPanel());
-                    backgroundPanel.repaint();
-                }
+                spawnBullet();
+                handleBullets();
+                spawnShield();
+                handleShields();
 
-                // Individual bullet treatments
-                Iterator<Bullet> iteratorB = bullets.iterator();
-                while (iteratorB.hasNext()) {
-                    Bullet bullet = iteratorB.next();
-                    bullet.move(getWidth(), getHeight());
-                    if (bullet.hasHit(player.getX(), player.getY(), player.getWidth(), player.getHeight())) {
-                        if (player.isShielded())
-                            player.removeShield();
-                        else player.getHit();
-                        hud.setFrame(0);
-
-                        backgroundPanel.remove(bullet.getBulletPanel());
-                        iteratorB.remove(); // Remove the bullet from the list
-                    }
-
-                    if (bullet.isOutOfBounds(getWidth(),getHeight())) {
-                        backgroundPanel.remove(bullet.getBulletPanel());
-                        iteratorB.remove();
-                    }
-                }
-
-                // Shield spawn routine
-                if (currentTime % 5000 < 17) {
-                    Shield shield = new Shield(0, 0, 30);
-                    shield.spawnGen(getWidth(), getHeight());
-                    shields.add(shield);
-                    backgroundPanel.add(shield.getShieldPanel());
-                    backgroundPanel.repaint();
-                }
-
-                // Shield/player collision treatment
-                Iterator<Shield> iteratorS = shields.iterator();
-                while (iteratorS.hasNext()) {
-                    Shield shield = iteratorS.next();
-                    if (shield.hasHit(player.getX(), player.getY(), player.getWidth(), player.getHeight())) {
-                        player.getShield();
-                        hud.setFrame(4);
-
-                        backgroundPanel.remove(shield.getShieldPanel());
-                        iteratorS.remove(); // Remove the bullet from the list
-                    }
-                }
-
-                if (currentTime % 200 < 17 && !player.isShielded())
-                    hud.setFrame(player.getHealth());
+                updateHUD();
                 player.move(getWidth(), getHeight());
             }
             // Buffer to handle the refresh rate
@@ -165,6 +109,68 @@ public class Gameplay extends JFrame implements Runnable {
         }
     }
 
+    private void spawnBullet() {
+        if (currentTime % 2000 < 17) {
+            Bullet bullet = new Bullet(100, 100, 80, 30, "../assets/laser_sprite_00.png");
+            bullets.add(bullet);
+            bullet.spawnGen(player.getX(), player.getY(), player.getWidth(), player.getHeight(), getWidth(), getHeight());
+            backgroundPanel.add(bullet.getBulletPanel());
+            backgroundPanel.repaint();
+        }
+    }
+
+    private void handleBullets() {
+        Iterator<Bullet> iterator = bullets.iterator();
+        while (iterator.hasNext()) {
+            Bullet bullet = iterator.next();
+            bullet.move(getWidth(), getHeight());
+            if (bullet.hasHit(player.getX(), player.getY(), player.getWidth(), player.getHeight())) {
+                handleBulletHit(bullet);
+                iterator.remove();
+            } else if (bullet.isOutOfBounds(getWidth(), getHeight())) {
+                backgroundPanel.remove(bullet.getBulletPanel());
+                iterator.remove();
+            }
+        }
+    }
+
+    private void handleBulletHit(Bullet bullet) {
+        if (player.isShielded())
+            player.removeShield();
+        else player.getHit();
+        hud.setFrame(0);
+        backgroundPanel.remove(bullet.getBulletPanel());
+    }
+
+    private void spawnShield() {
+        if (currentTime % 5000 < 17 && shields.isEmpty() && !player.isShielded()) {
+            Shield shield = new Shield(0, 0, 30);
+            shield.spawnGen(getWidth(), getHeight());
+            shields.add(shield);
+            backgroundPanel.add(shield.getShieldPanel());
+            backgroundPanel.repaint();
+        }
+    }
+
+    private void handleShields() {
+        Iterator<Shield> iterator = shields.iterator();
+        while (iterator.hasNext()) {
+            Shield shield = iterator.next();
+            if (shield.hasHit(player.getX(), player.getY(), player.getWidth(), player.getHeight())) {
+                player.getShield();
+                hud.setFrame(4);
+                backgroundPanel.remove(shield.getShieldPanel());
+                iterator.remove();
+            }
+        }
+    }
+
+    private void updateHUD() {
+        if (currentTime % 200 < 17 && !player.isShielded())
+            hud.setFrame(player.getHealth());
+    }
+
+
     // Other Functions:
     public void togglePause() {
         isPaused = !isPaused;
@@ -172,11 +178,11 @@ public class Gameplay extends JFrame implements Runnable {
         backgroundPanel.repaint();
     }
 
-    private void playSong(String filePath) {
+    private void playSong() {
         try {
             AudioInputStream audioInputStream =
-                    AudioSystem.getAudioInputStream(new File(filePath).getAbsoluteFile());
-            clip = AudioSystem.getClip();
+                    AudioSystem.getAudioInputStream(new File("../assets/st_city.wav").getAbsoluteFile());
+            Clip clip = AudioSystem.getClip();
             clip.open(audioInputStream);
             clip.start();
             clip.loop(Clip.LOOP_CONTINUOUSLY);
