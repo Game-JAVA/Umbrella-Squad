@@ -3,6 +3,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.Rectangle;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
@@ -103,28 +104,54 @@ public class Gameplay extends JFrame implements Runnable {
                 currentTime += 17;
                 System.out.println(currentTime);
 
+                // Bullet spawn routine
                 if (currentTime % 2000 < 17) {
-                    Bullet bullet = new Bullet(100, 100, 70, 40, 1, "../assets/laser_sprite_00.png");
+                    Bullet bullet = new Bullet(100, 100, 80, 30, 1, "../assets/laser_sprite_00.png");
                     bullets.add(bullet);
                     bullet.spawnGen(player.getX(), player.getY(), player.getWidth(), player.getHeight(), getWidth(), getHeight());
                     backgroundPanel.add(bullet.getBulletPanel());
                     backgroundPanel.repaint();
                 }
 
-                Iterator<Bullet> iterator = bullets.iterator();
-                while (iterator.hasNext()) {
-                    Bullet bullet = iterator.next();
+                // Bullet/player collision treatment
+                Iterator<Bullet> iteratorB = bullets.iterator();
+                while (iteratorB.hasNext()) {
+                    Bullet bullet = iteratorB.next();
                     bullet.move(getWidth(), getHeight());
                     if (bullet.hasHit(player.getX(), player.getY(), player.getWidth(), player.getHeight())) {
-                        player.getHit();
+                        if (player.isShielded())
+                            player.removeShield();
+                        else player.getHit();
                         hud.setFrame(0);
 
                         backgroundPanel.remove(bullet.getBulletPanel());
-                        iterator.remove(); // Remove the bullet from the list
+                        iteratorB.remove(); // Remove the bullet from the list
                     }
                 }
 
-                if (currentTime % 200 < 17)
+                // Shield spawn routine
+                if (currentTime % 5000 < 17) {
+                    Shield shield = new Shield(0, 0, 50);
+                    shield.spawnGen(getWidth(), getHeight());
+                    shields.add(shield);
+                    backgroundPanel.add(shield.getShieldPanel());
+                    backgroundPanel.repaint();
+                }
+
+                // Shield/player collision treatment
+                Iterator<Shield> iteratorS = shields.iterator();
+                while (iteratorS.hasNext()) {
+                    Shield shield = iteratorS.next();
+                    if (shield.hasHit(player.getX(), player.getY(), player.getWidth(), player.getHeight())) {
+                        player.getShield();
+                        hud.setFrame(4);
+
+                        backgroundPanel.remove(shield.getShieldPanel());
+                        iteratorS.remove(); // Remove the bullet from the list
+                    }
+                }
+
+                if (currentTime % 200 < 17 && !player.isShielded())
                     hud.setFrame(player.getHealth());
                 player.move(getWidth(), getHeight());
             }
