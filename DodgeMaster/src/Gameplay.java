@@ -129,6 +129,11 @@ public class Gameplay extends JFrame implements Runnable {
 
                 updateHUD();
                 player.move(getWidth(), getHeight());
+
+                if (player.getHealth() <= 0) {
+                    isGameOver = true;
+                    backgroundPanel.repaint();
+                }
             }
             // Buffer to handle the refresh rate
             try {
@@ -189,6 +194,7 @@ public class Gameplay extends JFrame implements Runnable {
             bullet.move(getWidth(), getHeight());
             if (bullet.hasHit(player.getX(), player.getY(), player.getWidth(), player.getHeight())) {
                 handleBulletHit(bullet);
+                repaint();
                 iterator.remove();
             } else if (bullet.isOutOfBounds(getWidth(), getHeight())) {
                 backgroundPanel.remove(bullet.getBulletPanel());
@@ -226,6 +232,7 @@ public class Gameplay extends JFrame implements Runnable {
             hud.setFrame(player.getHealth());
     }
 
+    // Other Functions:
     // Start score timer
     private void startScoreTimer() {
         scoreTimer = new Timer(1000, e -> {
@@ -236,7 +243,6 @@ public class Gameplay extends JFrame implements Runnable {
         scoreTimer.start();
     }
 
-    // Other Functions:
     private void handleBulletHit(Bullet bullet) {
         if (player.isShielded())
             player.removeShield();
