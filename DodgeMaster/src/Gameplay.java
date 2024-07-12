@@ -147,7 +147,7 @@ public class Gameplay extends JFrame implements Runnable {
 
                 // Shield spawn routine
                 if (currentTime % 5000 < 17) {
-                    Shield shield = new Shield(0, 0, 50);
+                    Shield shield = new Shield(0, 0, 50,"../assets/shield.png");
                     shield.spawnGen(getWidth(), getHeight());
                     shields.add(shield);
                     backgroundPanel.add(shield.getShieldPanel());

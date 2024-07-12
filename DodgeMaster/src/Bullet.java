@@ -1,36 +1,22 @@
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.Random;
 
 public class Bullet extends Rectangle {
     // Attributes
-    private final int damage;
     private final JPanel bulletPanel;
-    private BufferedImage bulletImage;
+    private final BufferedImage bulletImage;
+    private int speedIndex;
     private int spawnSide;
     private boolean isVertical;
 
     // Constructor
-    public Bullet(int x, int y, int width, int height, int damage, String imagePath) {
+    public Bullet(int x, int y, int width, int height, int speedIndex,String imagePath) {
         super(x, y, width, height);
-        this.damage = damage;
-
-        try { bulletImage = ImageIO.read(new File(imagePath));
-        } catch (IOException e) {e.printStackTrace();}
-
-        bulletPanel = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                draw(g);
-            }
-        };
-        bulletPanel.setOpaque(false);
-        bulletPanel.setBounds(x, y, width, height);
+        this.speedIndex = speedIndex;
+        bulletImage = loadImage(imagePath); // Load default image
+        bulletPanel = createPanel(); // Initialize the panel
     }
 
     // Methods:
@@ -105,18 +91,18 @@ public class Bullet extends Rectangle {
         switch (getSpawnSide()) {
             case 1: // Spawns at North
                 setSpeedX(0);
-                setSpeedY(4);
+                setSpeedY(speedIndex);
                 break;
             case 2: // Spawns at East
-                setSpeedX(-4);
+                setSpeedX(-speedIndex);
                 setSpeedY(0);
                 break;
             case 3: // Spawns at South
                 setSpeedX(0);
-                setSpeedY(-4);
+                setSpeedY(-speedIndex);
                 break;
             case 4: // Spawns at West
-                setSpeedX(4);
+                setSpeedX(speedIndex);
                 setSpeedY(0);
                 break;
         }
@@ -156,7 +142,6 @@ public class Bullet extends Rectangle {
                 ", y=" + getY() +
                 ", speedX=" + getSpeedX() +
                 ", speedY=" + getSpeedY() +
-                ", damage=" + damage +
                 '}';
     }
 }

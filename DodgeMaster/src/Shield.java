@@ -1,23 +1,16 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.Random;
 
 public class Shield extends Rectangle {
     private final JPanel shieldPanel;
+    private final BufferedImage shieldImage;
 
-    public Shield(int x, int y, int size) {
+    public Shield(int x, int y, int size, String imagePath) {
         super(x, y, size, size);
-
-        shieldPanel = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                g.fillRect(0, 0, getWidth(), getHeight());
-            }
-        };
-
-        shieldPanel.setOpaque(false);
-        shieldPanel.setBounds(x, y, size, size);
+        shieldImage = loadImage(imagePath); // Load default image
+        shieldPanel = createPanel(); // Initialize the panel
     }
 
     public void spawnGen(int screenWidth, int screenHeight) {

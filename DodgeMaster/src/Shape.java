@@ -8,13 +8,6 @@ public abstract class Shape {
     private int speedY;
 
     // Constructors {
-    public Shape(int x, int y, int speedX, int speedY) {
-        this.x = x;
-        this.y = y;
-        this.speedX = speedX;
-        this.speedY = speedY;
-    }
-
         // Position Constructor
     public Shape(int x, int y) {
         this.x = x;
@@ -39,31 +32,15 @@ public abstract class Shape {
     // }
 
     // Getters and Setters
-    public int getX() {
-        return x;
-    }
-    public int getY() {
-        return y;
-    }
-    public int getSpeedX() {
-        return speedX;
-    }
-    public int getSpeedY() {
-        return speedY;
-    }
+    public int getX() {return x;}
+    public int getY() {return y;}
+    public int getSpeedX() {return speedX;}
+    public int getSpeedY() {return speedY;}
 
-    public void setX(int posX) {
-        this.x = posX;
-    }
-    public void setY(int posY) {
-        this.y = posY;
-    }
-    public void setSpeedX(int speedX) {
-        this.speedX = speedX;
-    }
-    public void setSpeedY(int speedY) {
-        this.speedY = speedY;
-    }
+    public void setX(int posX) {this.x = posX;}
+    public void setY(int posY) {this.y = posY;}
+    public void setSpeedX(int speedX) {this.speedX = speedX;}
+    public void setSpeedY(int speedY) {this.speedY = speedY;}
 
     //ToString
     @Override
