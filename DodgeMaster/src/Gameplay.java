@@ -14,12 +14,15 @@ import java.util.List;
 
 public class Gameplay extends JFrame implements Runnable {
     // Attributes
-    private double currentTime;
+    private double currentTime = 0;
     private boolean isPaused;
+    private boolean isGameOver;
+    private Timer scoreTimer;
     private final DifficultySettings.DifficultyConfig config;
     // Screens
     private final Image backgroundImage;
     private final Image pauseImage;
+    private final Image gameOverImage;
     private JPanel backgroundPanel;
     // Entities
     private Player player;
@@ -36,11 +39,17 @@ public class Gameplay extends JFrame implements Runnable {
         // Initializing components
         backgroundImage = new ImageIcon("../assets/bg_gameplayCity.png").getImage();
         pauseImage = new ImageIcon("../assets/bg_pauseScreen.png").getImage();
+        gameOverImage = new ImageIcon("../assets/GameOver.jpeg").getImage();
+
+        // Initialize lists
         bullets = new ArrayList<>();
         shields = new ArrayList<>();
 
         // Handling entities
         initComponents();
+
+        // song play
+        playSong();
 
         // Keyboard listener for player actions and pause
         addKeyListener(new KeyAdapter() {
@@ -68,6 +77,9 @@ public class Gameplay extends JFrame implements Runnable {
         createBufferStrategy(2);
         Thread t = new Thread(this);
         t.start();
+
+        // Start score timer
+        startScoreTimer();
     }
 
     private void initComponents() {
@@ -86,6 +98,12 @@ public class Gameplay extends JFrame implements Runnable {
                 g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
                 if (isPaused)
                     g.drawImage(pauseImage, 0, 0, getWidth(), getHeight(), this);
+                if (isGameOver) {
+                    g.drawImage(gameOverImage, 0, 0, getWidth(), getHeight(), this);
+                }
+
+                // Draw the score
+                hud.drawScore(g, getWidth());
             }
         };
 
@@ -99,7 +117,7 @@ public class Gameplay extends JFrame implements Runnable {
     // Game loop
     public void run() {
         while (true) {
-            if (!isPaused) {
+            if (!isPaused && !isGameOver) {
                 currentTime += 17;
 
                 spawnBullet();
@@ -204,6 +222,16 @@ public class Gameplay extends JFrame implements Runnable {
     private void updateHUD() {
         if (currentTime % 200 < 17 && !player.isShielded())
             hud.setFrame(player.getHealth());
+    }
+
+    // Start score timer
+    private void startScoreTimer() {
+        scoreTimer = new Timer(1000, e -> {
+            if (!isPaused && !isGameOver) {
+                hud.addScore(10); // Incrementa a pontuação em 10 a cada segundo
+            }
+        });
+        scoreTimer.start();
     }
 
     // Other Functions:

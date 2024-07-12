@@ -9,6 +9,7 @@ public class Hud extends Rectangle{
     // Attributes
     private final JPanel hudPanel;
     private BufferedImage hudImage;
+    private int score;
 
     // Constructor
     public Hud(int x, int y, int width, int height, String imagePath) {
@@ -41,5 +42,34 @@ public class Hud extends Rectangle{
         hudPanel.repaint();
     }
 
-    public JPanel getHudPanel() {return hudPanel;}
+    public JPanel getHudPanel() {
+        return hudPanel;
+    }
+
+    public void addScore(int points) {
+        score += points;
+        hudPanel.repaint();
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void drawScore(Graphics g, int screenWidth) {
+        g.setFont(new Font("Arial", Font.BOLD, 20));
+        g.setColor(Color.WHITE);
+
+        // Draw score background rectangle
+        int rectWidth = 150;
+        int rectHeight = 30;
+        int rectX = (screenWidth - rectWidth) / 2;
+        int rectY = 10;
+
+        g.setColor(new Color(0, 0, 0, 0)); // Semi-transparent black
+        g.fillRect(rectX, rectY, rectWidth, rectHeight);
+
+        // Draw score text
+        g.setColor(Color.WHITE);
+        g.drawString("Score: " + score, rectX + 10, rectY + 20);
+    }
 }
