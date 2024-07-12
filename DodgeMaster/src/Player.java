@@ -11,7 +11,7 @@ public class Player extends Rectangle {
     // Attributes
     private int health;
     private final int speedIndex;
-        // Structuring and movement variables:
+        // Structure and movement variables:
     private final JPanel playerPanel;           // Turning the player in its own panel
     private BufferedImage playerImage;          // Buffered image to it's sprites
     private final Stack<Integer> xKeys = new Stack<>();   // A stack for each axis of movement
@@ -30,20 +30,8 @@ public class Player extends Rectangle {
         super(x, y);
         this.health = health;
         this.speedIndex = speedIndex;
-
-        // Load player default image
-        try { playerImage = ImageIO.read(new File(imagePath));
-        } catch (IOException e) {e.printStackTrace();}
-
-        // Initialize the player panel
-        playerPanel = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                draw(g);
-            }
-        };
-        playerPanel.setOpaque(false);   // Handle transparency
+        playerImage = loadImage(imagePath); // Load default image
+        playerPanel = createPanel(); // Initialize the panel
     }
     // }
 

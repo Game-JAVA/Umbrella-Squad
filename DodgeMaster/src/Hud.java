@@ -5,8 +5,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class Hud extends Rectangle {
-    private JPanel hudPanel;
+public class Hud extends Rectangle{
+    // Attributes
+    private final JPanel hudPanel;
     private BufferedImage hudImage;
     private int score;
 
@@ -14,11 +15,8 @@ public class Hud extends Rectangle {
     public Hud(int x, int y, int width, int height, String imagePath) {
         super(x, y, width, height);
 
-        try {
-            hudImage = ImageIO.read(new File(imagePath));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        try { hudImage = ImageIO.read(new File(imagePath));
+        } catch (IOException e) {e.printStackTrace();}
 
         hudPanel = new JPanel() {
             @Override
@@ -40,9 +38,7 @@ public class Hud extends Rectangle {
         try {
             String imagePath = String.format("../assets/hearts_sprite_%02d.png", frameNumber);
             hudImage = ImageIO.read(new File(imagePath));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) {e.printStackTrace();}
         hudPanel.repaint();
     }
 
