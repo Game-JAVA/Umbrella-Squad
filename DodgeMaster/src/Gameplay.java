@@ -96,8 +96,8 @@ public class Gameplay extends JFrame implements Runnable {
                     g.drawImage(gameOverImage, 0, 0, getWidth(), getHeight(), this);
                 }
 
-                // Draw the score
-                hud.drawScore(g, getWidth());
+                // Draw the HUD (score and timer)
+                hud.drawHud(g, getWidth());
             }
         };
 
