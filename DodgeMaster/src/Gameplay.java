@@ -1,20 +1,25 @@
-import javax.sound.sampled.*;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import javax.sound.sampled.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 public class Gameplay extends JFrame implements Runnable {
     // Attributes
     // Screens
     private final Image backgroundImage;
     private final Image pauseImage;
+    private final Image gameOverImage;
     private JPanel backgroundPanel;
     // Entities
     private Player player;
@@ -24,7 +29,7 @@ public class Gameplay extends JFrame implements Runnable {
     //
     private double currentTime;
     private boolean isPaused;
-    private Clip clip;
+    private boolean isGameOver;
     private Timer scoreTimer;
 
     // Constructor
@@ -32,6 +37,7 @@ public class Gameplay extends JFrame implements Runnable {
         // Load images
         backgroundImage = new ImageIcon("../assets/bg_gameplayCity.png").getImage();
         pauseImage = new ImageIcon("../assets/bg_pauseScreen.png").getImage();
+        gameOverImage = new ImageIcon("../assets/GameOver.jpeg").getImage();
 
         // Initialize lists
         bullets = new ArrayList<>();
@@ -39,9 +45,6 @@ public class Gameplay extends JFrame implements Runnable {
 
         // Initialize components
         initComponents();
-
-        // song play
-        playSong("../assets/som_cidade.wav");
 
         // Keyboard listener for player actions and pause
         addKeyListener(new KeyAdapter() {
@@ -52,9 +55,7 @@ public class Gameplay extends JFrame implements Runnable {
                     player.keyPressed(evt);
             }
 
-            public void keyReleased(KeyEvent evt) {
-                player.keyRelease(evt);
-            }
+            public void keyReleased(KeyEvent evt) { player.keyRelease(evt); }
         });
 
         // ComponentListener to handle window resizing
@@ -88,8 +89,12 @@ public class Gameplay extends JFrame implements Runnable {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
-                if (isPaused)
+                if (isPaused) {
                     g.drawImage(pauseImage, 0, 0, getWidth(), getHeight(), this);
+                }
+                if (isGameOver) {
+                    g.drawImage(gameOverImage, 0, 0, getWidth(), getHeight(), this);
+                }
 
                 // Draw the score
                 hud.drawScore(g, getWidth());
@@ -106,7 +111,7 @@ public class Gameplay extends JFrame implements Runnable {
     // Game loop
     public void run() {
         while (true) {
-            if (!isPaused) {
+            if (!isPaused && !isGameOver) {
                 currentTime += 17;
                 System.out.println(currentTime);
 
@@ -127,12 +132,16 @@ public class Gameplay extends JFrame implements Runnable {
                     if (bullet.hasHit(player.getX(), player.getY(), player.getWidth(), player.getHeight())) {
                         if (player.isShielded())
                             player.removeShield();
-                        else
-                            player.getHit();
+                        else player.getHit();
                         hud.setFrame(0);
 
                         backgroundPanel.remove(bullet.getBulletPanel());
                         iteratorB.remove(); // Remove the bullet from the list
+
+                        if (player.getHealth() <= 0) {
+                            isGameOver = true;
+                            backgroundPanel.repaint();
+                        }
                     }
                 }
 
@@ -174,7 +183,7 @@ public class Gameplay extends JFrame implements Runnable {
     // Start score timer
     private void startScoreTimer() {
         scoreTimer = new Timer(1000, e -> {
-            if (!isPaused) {
+            if (!isPaused && !isGameOver) {
                 hud.addScore(10); // Incrementa a pontuação em 10 a cada segundo
             }
         });
@@ -184,31 +193,7 @@ public class Gameplay extends JFrame implements Runnable {
     // Other Functions:
     public void togglePause() {
         isPaused = !isPaused;
-        if (isPaused) {
-            if (clip != null && clip.isRunning()) {
-                clip.stop(); // Pause the music
-            }
-        } else {
-            if (clip != null && !clip.isRunning()) {
-                clip.start(); // Resume the music
-                clip.loop(Clip.LOOP_CONTINUOUSLY);
-            }
-        }
         revalidate();
         backgroundPanel.repaint();
     }
-
-    private void playSong(String filePath) {
-        try {
-            AudioInputStream audioInputStream =
-                    AudioSystem.getAudioInputStream(new File(filePath).getAbsoluteFile());
-            clip = AudioSystem.getClip();
-            clip.open(audioInputStream);
-            clip.start();
-            clip.loop(Clip.LOOP_CONTINUOUSLY);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 }

@@ -66,7 +66,7 @@ public class HomeScreen extends JFrame {
             iniciarButton.addActionListener(e -> abrirTelaJogo());
 
             // Cria o JComboBox
-            nivelComboBox = new JComboBox<>(new String[]{"Fácil", "Médio", "Difícil"});
+            nivelComboBox = new JComboBox<>(new String[]{"Easy", "Medium", "Hard"});
             nivelComboBox.setPreferredSize(new Dimension(150, 30)); // Ajuste o tamanho preferido conforme necessário
             nivelComboBox.setFont(new Font("Arial", Font.BOLD, 22));
             nivelComboBox.setBackground(Color.WHITE); // Cor de fundo
@@ -78,7 +78,7 @@ public class HomeScreen extends JFrame {
             gbc.gridx = 0;
             gbc.gridy = 0;
             gbc.insets = new Insets(140, 40, 20, 40);
-            JLabel label = new JLabel("Selecione o nível:");
+            JLabel label = new JLabel("Difficult Selector:");
             label.setForeground(Color.WHITE);
             label.setFont(new Font("Arial", Font.BOLD, 40));
             panel.add(label, gbc);

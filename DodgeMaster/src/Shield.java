@@ -12,7 +12,6 @@ public class Shield extends Rectangle {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                g.setColor(new Color(85, 209, 208)); // Color #55d1d0
                 g.fillRect(0, 0, getWidth(), getHeight());
             }
         };
