@@ -21,6 +21,7 @@ public class Gameplay extends JFrame implements Runnable {
     private final Image pauseImage;
     private final Image gameOverImage;
     private JPanel backgroundPanel;
+    private final DifficultySettings.DifficultyConfig config;
     // Entities
     private Player player;
     private Hud hud;
@@ -34,6 +35,10 @@ public class Gameplay extends JFrame implements Runnable {
 
     // Constructor
     public Gameplay(String difficulty) {
+        // Initialize DifficultySettings
+        DifficultySettings difficultySettings = new DifficultySettings(difficulty);
+        config = difficultySettings.getCurrentConfig();
+
         // Load images
         backgroundImage = new ImageIcon("../assets/bg_gameplayCity.png").getImage();
         pauseImage = new ImageIcon("../assets/bg_pauseScreen.png").getImage();
@@ -45,6 +50,9 @@ public class Gameplay extends JFrame implements Runnable {
 
         // Initialize components
         initComponents();
+
+        // song play
+        playSong();
 
         // Keyboard listener for player actions and pause
         addKeyListener(new KeyAdapter() {
@@ -80,7 +88,7 @@ public class Gameplay extends JFrame implements Runnable {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(1360, 768));
 
-        player = new Player((getWidth() / 2), (getHeight() / 2), 3, 4, "../assets/david_sprite_00.png");
+        player = new Player((getWidth() / 2), (getHeight() / 2), 3, config.getPlayerSpeed(), "../assets/david_sprite_00.png");
         hud = new Hud(10, 10, 100, 45, "../assets/hearts_sprite_03.png");
 
         // Gameplay screen initiation and configuration
@@ -113,62 +121,13 @@ public class Gameplay extends JFrame implements Runnable {
         while (true) {
             if (!isPaused && !isGameOver) {
                 currentTime += 17;
-                System.out.println(currentTime);
 
-                // Bullet spawn routine
-                if (currentTime % 2000 < 17) {
-                    Bullet bullet = new Bullet(100, 100, 80, 30, 1, "../assets/laser_sprite_00.png");
-                    bullets.add(bullet);
-                    bullet.spawnGen(player.getX(), player.getY(), player.getWidth(), player.getHeight(), getWidth(), getHeight());
-                    backgroundPanel.add(bullet.getBulletPanel());
-                    backgroundPanel.repaint();
-                }
+                spawnBullet();
+                handleBullets();
+                spawnShield();
+                handleShields();
 
-                // Bullet/player collision treatment
-                Iterator<Bullet> iteratorB = bullets.iterator();
-                while (iteratorB.hasNext()) {
-                    Bullet bullet = iteratorB.next();
-                    bullet.move(getWidth(), getHeight());
-                    if (bullet.hasHit(player.getX(), player.getY(), player.getWidth(), player.getHeight())) {
-                        if (player.isShielded())
-                            player.removeShield();
-                        else player.getHit();
-                        hud.setFrame(0);
-
-                        backgroundPanel.remove(bullet.getBulletPanel());
-                        iteratorB.remove(); // Remove the bullet from the list
-
-                        if (player.getHealth() <= 0) {
-                            isGameOver = true;
-                            backgroundPanel.repaint();
-                        }
-                    }
-                }
-
-                // Shield spawn routine
-                if (currentTime % 5000 < 17) {
-                    Shield shield = new Shield(0, 0, 50,"../assets/shield.png");
-                    shield.spawnGen(getWidth(), getHeight());
-                    shields.add(shield);
-                    backgroundPanel.add(shield.getShieldPanel());
-                    backgroundPanel.repaint();
-                }
-
-                // Shield/player collision treatment
-                Iterator<Shield> iteratorS = shields.iterator();
-                while (iteratorS.hasNext()) {
-                    Shield shield = iteratorS.next();
-                    if (shield.hasHit(player.getX(), player.getY(), player.getWidth(), player.getHeight())) {
-                        player.getShield();
-                        hud.setFrame(4);
-
-                        backgroundPanel.remove(shield.getShieldPanel());
-                        iteratorS.remove(); // Remove the bullet from the list
-                    }
-                }
-
-                if (currentTime % 200 < 17 && !player.isShielded())
-                    hud.setFrame(player.getHealth());
+                updateHUD();
                 player.move(getWidth(), getHeight());
             }
             // Buffer to handle the refresh rate
@@ -178,6 +137,93 @@ public class Gameplay extends JFrame implements Runnable {
                 ex.printStackTrace();
             }
         }
+    }
+
+    private void spawnBullet() {
+        final int transitionMidTime = 60000; // 1 minuto em milissegundos
+        final int transitionLateTime = 180000; // 3 minutos em milissegundos
+
+        int bulletGenPeriod;
+        int bulletSpeed;
+
+        if (currentTime < transitionMidTime) {
+            bulletGenPeriod = interpolate(
+                    config.getBulletInitGenPeriod(),
+                    config.getBulletMidGenPeriod(),
+                    currentTime / (double) transitionMidTime
+            );
+            bulletSpeed = interpolate(
+                    config.getBulletInitSpeed(),
+                    config.getBulletMidSpeed(),
+                    currentTime / (double) transitionMidTime
+            );
+        } else if (currentTime < transitionLateTime) {
+            bulletGenPeriod = interpolate(
+                    config.getBulletMidGenPeriod(),
+                    config.getBulletLateGenPeriod(),
+                    (currentTime - transitionMidTime) / (double) (transitionLateTime - transitionMidTime)
+            );
+            bulletSpeed = interpolate(
+                    config.getBulletMidSpeed(),
+                    config.getBulletLateSpeed(),
+                    (currentTime - transitionMidTime) / (double) (transitionLateTime - transitionMidTime)
+            );
+        } else {
+            bulletGenPeriod = config.getBulletLateGenPeriod();
+            bulletSpeed = config.getBulletLateSpeed();
+        }
+
+        if (currentTime % bulletGenPeriod < 17) {
+            Bullet bullet = new Bullet(100, 100, 80, 30, bulletSpeed, "../assets/laser_sprite_00.png");
+            bullets.add(bullet);
+            bullet.spawnGen(player.getX(), player.getY(), player.getWidth(), player.getHeight(), getWidth(), getHeight());
+            backgroundPanel.add(bullet.getBulletPanel());
+            backgroundPanel.repaint();
+        }
+    }
+
+    private void handleBullets() {
+        Iterator<Bullet> iterator = bullets.iterator();
+        while (iterator.hasNext()) {
+            Bullet bullet = iterator.next();
+            bullet.move(getWidth(), getHeight());
+            if (bullet.hasHit(player.getX(), player.getY(), player.getWidth(), player.getHeight())) {
+                handleBulletHit(bullet);
+                iterator.remove();
+            } else if (bullet.isOutOfBounds(getWidth(), getHeight())) {
+                backgroundPanel.remove(bullet.getBulletPanel());
+                iterator.remove();
+            }
+        }
+    }
+
+    private void spawnShield() {
+        // Use ShieldGenGap from config
+        if (currentTime % config.getShieldGenGap() < 17 && shields.isEmpty() && !player.isShielded()) {
+            Shield shield = new Shield(0, 0, 30, "../assets/shield.png");
+            shield.spawnGen(getWidth(), getHeight());
+            shields.add(shield);
+            backgroundPanel.add(shield.getShieldPanel());
+            backgroundPanel.repaint();
+        }
+    }
+
+    private void handleShields() {
+        Iterator<Shield> iterator = shields.iterator();
+        while (iterator.hasNext()) {
+            Shield shield = iterator.next();
+            if (shield.hasHit(player.getX(), player.getY(), player.getWidth(), player.getHeight())) {
+                player.getShield();
+                hud.setFrame(4);
+                backgroundPanel.remove(shield.getShieldPanel());
+                iterator.remove();
+            }
+        }
+    }
+
+    private void updateHUD() {
+        if (currentTime % 200 < 17 && !player.isShielded())
+            hud.setFrame(player.getHealth());
     }
 
     // Start score timer
@@ -191,9 +237,34 @@ public class Gameplay extends JFrame implements Runnable {
     }
 
     // Other Functions:
+    private void handleBulletHit(Bullet bullet) {
+        if (player.isShielded())
+            player.removeShield();
+        else player.getHit();
+        hud.setFrame(0);
+        backgroundPanel.remove(bullet.getBulletPanel());
+    }
+
+    private int interpolate(int startValue, int endValue, double fraction) {
+        return (int) (startValue + (endValue - startValue) * fraction);
+    }
+
     public void togglePause() {
         isPaused = !isPaused;
         revalidate();
         backgroundPanel.repaint();
+    }
+
+    private void playSong() {
+        try {
+            AudioInputStream audioInputStream =
+                    AudioSystem.getAudioInputStream(new File("../assets/st_city.wav").getAbsoluteFile());
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.start();
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
