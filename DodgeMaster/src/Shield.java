@@ -5,7 +5,7 @@ import java.util.Random;
 public class Shield extends Rectangle {
     private final JPanel shieldPanel;
 
-    public Shield(int x, int y, int size,String imagePath) {
+    public Shield(int x, int y, int size) {
         super(x, y, size, size);
 
         shieldPanel = new JPanel() {
