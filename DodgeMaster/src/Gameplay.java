@@ -180,7 +180,7 @@ public class Gameplay extends JFrame implements Runnable {
     private void spawnShield() {
         // Use ShieldGenGap from config
         if (currentTime % config.getShieldGenGap() < 17 && shields.isEmpty() && !player.isShielded()) {
-            Shield shield = new Shield(0, 0, 30);
+            Shield shield = new Shield(0, 0, 30, "../assets/shield.png");
             shield.spawnGen(getWidth(), getHeight());
             shields.add(shield);
             backgroundPanel.add(shield.getShieldPanel());
