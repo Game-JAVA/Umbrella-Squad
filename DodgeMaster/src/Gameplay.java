@@ -145,8 +145,8 @@ public class Gameplay extends JFrame implements Runnable {
     }
 
     private void spawnBullet() {
-        final int transitionMidTime = 60000; // 1 minuto em milissegundos
-        final int transitionLateTime = 180000; // 3 minutos em milissegundos
+        final int transitionMidTime = 30000;
+        final int transitionLateTime = 60000;
 
         int bulletGenPeriod;
         int bulletSpeed;
