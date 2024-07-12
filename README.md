@@ -43,10 +43,11 @@ classDiagram
     class Rectangle {
         - width: int
         - height: int
+        - image: BufferedImage
+         public BufferedImage loadImage()
+         public JPanel createPanel()
         + move() void Override
         + draw() void
-        + getBounds() Rectangle
-        + intersects() bool
     }
 
     class Player {
@@ -54,61 +55,122 @@ classDiagram
         - speedIndex: int
         - playerPanel: JPanel
         - playerImage: Image
+    private final Stack<Integer> xKeys = new Stack<>();   
+    private final Stack<Integer> yKeys = new Stack<>(); 
+    private boolean isMoving = false;
+    private boolean isFacingLeft = false;
+    private int frameUpdate = 0;
+    private int frameIndex = 0;
+    private boolean haveShield;
+
+
         + move() void Override
         + draw() void
+      public void updateSize()
+      public void keyPressed()
         + keyRelease() void
-        + keyPressed() void
-        - updateSpeed() void
+      private void updateSpeed()
     }
 
     class Shield {
-        - active: bool
         - shieldPanel: JPanel
-        + isActive() bool
-        + setActive() void
+        public void spawnGen()
+        public boolean hasHit()
         + getShieldPanel() JPanel
-        + setVisible() bool
-        + draw() void
     }
 
   class Bullet {
-        - damage: int
-        + move() void Override
+          private final JPanel bulletPanel;
+          private final BufferedImage bulletImage;
+          private int speedIndex;
+          private int spawnSide;
+          private boolean isVertical;
+
+         public void move()
+         public boolean isOutOfBounds()
+         public void spawnGen()
+         public boolean hasHit()
+         public void draw()
     }
+
+   class Hud {
+      private JPanel hudPanel;
+      private BufferedImage hudImage;
+       private int score;
+       private int elapsedTime;
+       private int min;
+       private int hour;
+       private Timer gameTimer;
+
+      public void drawHud()
+      private void drawScore()
+      private void drawTimer()
+      public void addScore()
+      public void setFrame()
+      public void startGameTimer()
+      public JPanel getHudPanel()
+   }
 
     class HomeScreen {
         - nivelComboBox: String
         - nivelSelecionado: String
+         - clip: Clip
+         private void tocarMusica()
         - abrirTelaJogo() void
         + main() void
     }
 
-    class PauseScreen {
-        - pauseImage: BufferedImage
-        - gameplay: Gameplay
-    }
-
     class Gameplay {
-        - width: int
-        - height: int
-        - player: Player
-        + run() void
+         - currentTime: double
+         - isPaused: boolean
+         - isGameOver: boolean
+         - scoreTimer: Timer
+         - config DifficultySettings.DifficultyConfig   
+         -backgroundImage: Image
+         - pauseImage: Image
+         - gameOverImage: Image
+         - backgroundPanel: JPanel
+         - player: Player
+         - hud: Hud
+         - bullets: List<Bullet>
+         - shields: List<Shield>
+         - initComponents() void
+         - run() void
+         private void spawnBullet()
+         private void handleBullets()
+         private void spawnShield()
+         private void handleShields()
+         private void updateHUD()
+         private void handleBulletHit()
+         private int interpolate()
+         public void togglePause()
     }
 
-  class JPanel {
-    }
+   class DifficultySettings {
+      - eazyConfig: DiffcultyConfig
+      - midConfig: DifficultyConfig
+      - hardConfig: DifficultyConfig
+      - setDifficulty()
+   }
 
-    class ImagePanel {
-        - backgroundImage: Image
-        - gameplay: Gameplay
-    }
+   class DifficultyConfig {
+      - shieldGenGap
+      - playerSpeed
+      - bulletLateGenGap
+      - bulletMidGenGap
+      - bulletInitGenGap
+      - bulletLateSpeed
+      - bulletMidSpeed
+      - bulletInitSpeed
+      - Getters
+   }
 
     Shape --|> Rectangle
     Rectangle --|> Player
     Rectangle --|> Shield
     Rectangle --|> Bullet
-
-    JPanel <|-- ImagePanel
+    Rectangle --|> Hud
+    DifficultySettings --|> DifficultyConfig 
 
 ```
 
