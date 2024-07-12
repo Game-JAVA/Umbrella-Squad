@@ -7,12 +7,14 @@ public class Bullet extends Rectangle {
     // Attributes
     private final JPanel bulletPanel;
     private final BufferedImage bulletImage;
+    private int speedIndex;
     private int spawnSide;
     private boolean isVertical;
 
     // Constructor
-    public Bullet(int x, int y, int width, int height, String imagePath) {
+    public Bullet(int x, int y, int width, int height, int speedIndex,String imagePath) {
         super(x, y, width, height);
+        this.speedIndex = speedIndex;
         bulletImage = loadImage(imagePath); // Load default image
         bulletPanel = createPanel(); // Initialize the panel
     }
@@ -89,18 +91,18 @@ public class Bullet extends Rectangle {
         switch (getSpawnSide()) {
             case 1: // Spawns at North
                 setSpeedX(0);
-                setSpeedY(4);
+                setSpeedY(speedIndex);
                 break;
             case 2: // Spawns at East
-                setSpeedX(-4);
+                setSpeedX(-speedIndex);
                 setSpeedY(0);
                 break;
             case 3: // Spawns at South
                 setSpeedX(0);
-                setSpeedY(-4);
+                setSpeedY(-speedIndex);
                 break;
             case 4: // Spawns at West
-                setSpeedX(4);
+                setSpeedX(speedIndex);
                 setSpeedY(0);
                 break;
         }

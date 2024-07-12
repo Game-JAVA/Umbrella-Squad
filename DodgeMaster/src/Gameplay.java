@@ -16,13 +16,12 @@ public class Gameplay extends JFrame implements Runnable {
     // Attributes
     private double currentTime;
     private boolean isPaused;
-    private DifficultySettings difficultySettings;
-    private DifficultySettings.DifficultyConfig config;
-        // Screens
+    private final DifficultySettings.DifficultyConfig config;
+    // Screens
     private final Image backgroundImage;
     private final Image pauseImage;
     private JPanel backgroundPanel;
-        // Entities
+    // Entities
     private Player player;
     private Hud hud;
     private final List<Bullet> bullets;
@@ -31,7 +30,7 @@ public class Gameplay extends JFrame implements Runnable {
     // Constructor
     public Gameplay(String difficulty) {
         // Initialize DifficultySettings
-        difficultySettings = new DifficultySettings(difficulty);
+        DifficultySettings difficultySettings = new DifficultySettings(difficulty);
         config = difficultySettings.getCurrentConfig();
 
         // Initializing components
@@ -51,7 +50,9 @@ public class Gameplay extends JFrame implements Runnable {
                 else player.keyPressed(evt);
             }
 
-            public void keyReleased(KeyEvent evt) {player.keyRelease(evt);}
+            public void keyReleased(KeyEvent evt) {
+                player.keyRelease(evt);
+            }
         });
 
         // ComponentListener to handle window resizing
@@ -75,7 +76,7 @@ public class Gameplay extends JFrame implements Runnable {
         setMinimumSize(new Dimension(1360, 768));
 
         player = new Player((getWidth() / 2), (getHeight() / 2), 3, config.getPlayerSpeed(), "../assets/david_sprite_00.png");
-        hud = new Hud(10,10,100,45,"../assets/hearts_sprite_03.png");
+        hud = new Hud(10, 10, 100, 45, "../assets/hearts_sprite_03.png");
 
         // Gameplay screen initiation and configuration
         backgroundPanel = new JPanel() {
@@ -110,15 +111,50 @@ public class Gameplay extends JFrame implements Runnable {
                 player.move(getWidth(), getHeight());
             }
             // Buffer to handle the refresh rate
-            try { Thread.sleep(17);
-            } catch (InterruptedException ex) {ex.printStackTrace();}
+            try {
+                Thread.sleep(17);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
     private void spawnBullet() {
-        // Use BulletInitGenPeriod from config
-        if (currentTime % config.getBulletInitGenPeriod() < 17) {
-            Bullet bullet = new Bullet(100, 100, config.getBulletInitSpeed(), 30, "../assets/laser_sprite_00.png");
+        final int transitionMidTime = 60000; // 1 minuto em milissegundos
+        final int transitionLateTime = 180000; // 3 minutos em milissegundos
+
+        int bulletGenPeriod;
+        int bulletSpeed;
+
+        if (currentTime < transitionMidTime) {
+            bulletGenPeriod = interpolate(
+                    config.getBulletInitGenPeriod(),
+                    config.getBulletMidGenPeriod(),
+                    currentTime / (double) transitionMidTime
+            );
+            bulletSpeed = interpolate(
+                    config.getBulletInitSpeed(),
+                    config.getBulletMidSpeed(),
+                    currentTime / (double) transitionMidTime
+            );
+        } else if (currentTime < transitionLateTime) {
+            bulletGenPeriod = interpolate(
+                    config.getBulletMidGenPeriod(),
+                    config.getBulletLateGenPeriod(),
+                    (currentTime - transitionMidTime) / (double) (transitionLateTime - transitionMidTime)
+            );
+            bulletSpeed = interpolate(
+                    config.getBulletMidSpeed(),
+                    config.getBulletLateSpeed(),
+                    (currentTime - transitionMidTime) / (double) (transitionLateTime - transitionMidTime)
+            );
+        } else {
+            bulletGenPeriod = config.getBulletLateGenPeriod();
+            bulletSpeed = config.getBulletLateSpeed();
+        }
+
+        if (currentTime % bulletGenPeriod < 17) {
+            Bullet bullet = new Bullet(100, 100, 80, 30, bulletSpeed, "../assets/laser_sprite_00.png");
             bullets.add(bullet);
             bullet.spawnGen(player.getX(), player.getY(), player.getWidth(), player.getHeight(), getWidth(), getHeight());
             backgroundPanel.add(bullet.getBulletPanel());
@@ -139,15 +175,6 @@ public class Gameplay extends JFrame implements Runnable {
                 iterator.remove();
             }
         }
-    }
-
-    private void handleBulletHit(Bullet bullet) {
-        if (player.isShielded())
-            player.removeShield();
-        else
-            player.getHit();
-        hud.setFrame(0);
-        backgroundPanel.remove(bullet.getBulletPanel());
     }
 
     private void spawnShield() {
@@ -180,6 +207,18 @@ public class Gameplay extends JFrame implements Runnable {
     }
 
     // Other Functions:
+    private void handleBulletHit(Bullet bullet) {
+        if (player.isShielded())
+            player.removeShield();
+        else player.getHit();
+        hud.setFrame(0);
+        backgroundPanel.remove(bullet.getBulletPanel());
+    }
+
+    private int interpolate(int startValue, int endValue, double fraction) {
+        return (int) (startValue + (endValue - startValue) * fraction);
+    }
+
     public void togglePause() {
         isPaused = !isPaused;
         revalidate();
@@ -194,6 +233,8 @@ public class Gameplay extends JFrame implements Runnable {
             clip.open(audioInputStream);
             clip.start();
             clip.loop(Clip.LOOP_CONTINUOUSLY);
-        } catch (Exception e) {e.printStackTrace();}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

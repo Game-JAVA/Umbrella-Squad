@@ -1,8 +1,8 @@
 public class DifficultySettings {
     // Difficulty values matrix
-    private static final DifficultyConfig EASY_CONFIG = new DifficultyConfig(20000, 3, 5000, 3000, 1000, 5, 7, 10);
+    private static final DifficultyConfig EASY_CONFIG = new DifficultyConfig(20000, 5, 5000, 3000, 1000, 5, 7, 10);
     private static final DifficultyConfig MEDIUM_CONFIG = new DifficultyConfig(15000, 4, 4000, 2500, 800, 7, 9, 12);
-    private static final DifficultyConfig HARD_CONFIG = new DifficultyConfig(10000, 5, 3000, 2000, 600, 10, 12, 15);
+    private static final DifficultyConfig HARD_CONFIG = new DifficultyConfig(10000, 3, 3000, 2000, 600, 10, 12, 15);
 
     private DifficultyConfig currentConfig;
 
